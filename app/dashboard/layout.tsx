@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname, useRouter } from "next/navigation"
-import { 
-  User, 
-  Briefcase, 
-  Code, 
-  Award, 
-  Mail, 
-  Share2, 
-  FileText, 
-  Home, 
-  Database, 
+import type React from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  User,
+  Briefcase,
+  Code,
+  Award,
+  Mail,
+  Share2,
+  FileText,
+  Home,
+  Database,
   LogOut,
   Menu,
   X,
-  Zap
-} from "lucide-react"
-import { CustomButton } from "@/components/ui/custom-button"
-import { ProtectedRoute } from "@/components/protected-route"
-import { useAuth } from "@/lib/auth-context"
-import { usePortfolioStore } from "@/lib/store"
-import { cn } from "@/lib/utils"
+  Zap,
+} from "lucide-react";
+import { CustomButton } from "@/components/ui/custom-button";
+import { ProtectedRoute } from "@/components/protected-route";
+import { useAuth } from "@/lib/auth-context";
+import { usePortfolioStore } from "@/lib/store";
+import { cn } from "@/lib/utils";
 
 const navigation = [
   { name: "Personal Info", href: "/dashboard", icon: User },
@@ -35,35 +35,35 @@ const navigation = [
   { name: "Contact Form", href: "/dashboard/contact", icon: Mail },
   { name: "CV Management", href: "/dashboard/cv", icon: FileText },
   { name: "Data Backup", href: "/dashboard/backup", icon: Database },
-]
+];
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const pathname = usePathname()
-  const router = useRouter()
-  const { user, signOut } = useAuth()
-  const { fetchAllData, loading, error, personalInfo } = usePortfolioStore()
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const pathname = usePathname();
+  const router = useRouter();
+  const { user, signOut } = useAuth();
+  const { fetchAllData, loading, error, personalInfo } = usePortfolioStore();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
-      fetchAllData()
+      fetchAllData();
     }
-  }, [user, fetchAllData])
+  }, [user, fetchAllData]);
 
   const handleSignOut = async () => {
     try {
-      await signOut()
-      router.push("/")
+      await signOut();
+      router.push("/");
     } catch (error) {
-      console.error("Sign out error:", error)
+      console.error("Sign out error:", error);
     }
-  }
+  };
 
-  const currentPage = navigation.find(item => item.href === pathname)
+  const currentPage = navigation.find((item) => item.href === pathname);
 
   return (
     <ProtectedRoute>
@@ -71,20 +71,24 @@ export default function DashboardLayout({
         <div className="flex">
           {/* Mobile overlay */}
           {sidebarOpen && (
-            <div 
+            <div
               className="fixed inset-0 bg-black/50 backdrop-blur-sm z-20 lg:hidden"
               onClick={() => setSidebarOpen(false)}
             />
           )}
 
           {/* Sidebar */}
-          <div className={cn(
-            "fixed inset-y-0 left-0 z-30 w-64 bg-gray-900 border-r border-white/10 transform transition-transform duration-300 ease-in-out lg:transform-none",
-            sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
-          )}>
+          <div
+            className={cn(
+              "fixed inset-y-0 left-0 z-30 w-64 bg-gray-900 border-r border-white/10 transform transition-transform duration-300 ease-in-out lg:transform-none",
+              sidebarOpen
+                ? "translate-x-0"
+                : "-translate-x-full lg:translate-x-0"
+            )}
+          >
             <div className="flex flex-col h-full">
               {/* Brand Header */}
-              <div className="p-6 border-b border-white/10">
+              <div className="flex-shrink-0 p-6 border-b border-white/10">
                 <div className="flex items-center gap-3 mb-4">
                   <Image
                     src="/icon.png"
@@ -98,14 +102,30 @@ export default function DashboardLayout({
                     <p className="text-xs text-gray-400">Portfolio Dashboard</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center justify-between">
-                  <CustomButton variant="outline" size="sm" asChild>
-                    <Link href="/" target="_blank" rel="noopener noreferrer">
-                      <Home className="w-4 h-4 mr-2" />
-                      View Portfolio
-                    </Link>
-                  </CustomButton>
+                  <div className="flex items-center gap-2">
+                    <CustomButton
+                      variant="outline"
+                      size="sm"
+                      asChild
+                      className="flex-1"
+                    >
+                      <Link href="/" target="_blank" rel="noopener noreferrer">
+                        <Home className="w-4 h-4 mr-2" />
+                        View Portfolio
+                      </Link>
+                    </CustomButton>
+                    <CustomButton
+                      variant="outline"
+                      size="sm"
+                      onClick={handleSignOut}
+                      className="text-red-400 hover:text-red-300 hover:bg-red-400/10 border-red-400/20 flex-1"
+                      title="Sign Out"
+                    >
+                      <LogOut className="w-4 h-4" />
+                    </CustomButton>
+                  </div>
                   <button
                     onClick={() => setSidebarOpen(false)}
                     className="lg:hidden p-1 rounded-lg hover:bg-gray-800 transition-colors"
@@ -118,7 +138,7 @@ export default function DashboardLayout({
               {/* Navigation */}
               <nav className="flex-1 p-4 space-y-1">
                 {navigation.map((item) => {
-                  const isActive = pathname === item.href
+                  const isActive = pathname === item.href;
                   return (
                     <Link
                       key={item.name}
@@ -126,41 +146,40 @@ export default function DashboardLayout({
                       onClick={() => setSidebarOpen(false)}
                       className={cn(
                         "flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200",
-                        isActive 
-                          ? "bg-white text-black shadow-lg" 
+                        isActive
+                          ? "bg-white text-black shadow-lg"
                           : "text-gray-300 hover:bg-gray-800 hover:text-white"
                       )}
                     >
-                      <item.icon className={cn(
-                        "w-5 h-5 flex-shrink-0",
-                        isActive ? "text-black" : "text-gray-400 group-hover:text-white"
-                      )} />
+                      <item.icon
+                        className={cn(
+                          "w-5 h-5 flex-shrink-0",
+                          isActive
+                            ? "text-black"
+                            : "text-gray-400 group-hover:text-white"
+                        )}
+                      />
                       <span className="font-medium">{item.name}</span>
                     </Link>
-                  )
+                  );
                 })}
               </nav>
 
-              {/* User Info & Sign Out */}
-              <div className="p-4 pb-6 border-t border-white/10">
+              {/* User Info */}
+              <div className="flex-shrink-0 p-4 pb-6 border-t border-white/10">
                 {user && (
-                  <div className="mb-4 p-3 bg-gray-800/50 rounded-lg">
+                  <div className="p-3 bg-gray-800/50 rounded-lg">
                     <p className="text-xs text-gray-400 mb-1">Signed in as:</p>
-                    <p className="text-sm font-medium truncate mb-2">{user.email}</p>
+                    <p className="text-sm font-medium truncate mb-2">
+                      {user.email}
+                    </p>
                     {personalInfo?.name && (
-                      <p className="text-xs text-gray-500">{personalInfo.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {personalInfo.name}
+                      </p>
                     )}
                   </div>
                 )}
-                <CustomButton 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleSignOut}
-                  className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-400/10"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
-                </CustomButton>
               </div>
             </div>
           </div>
@@ -176,22 +195,22 @@ export default function DashboardLayout({
                 >
                   <Menu className="w-5 h-5" />
                 </button>
-                
+
                 {currentPage && (
                   <div className="flex items-center gap-2">
                     <currentPage.icon className="w-5 h-5 text-gray-400" />
                     <h1 className="text-lg font-mono">{currentPage.name}</h1>
                   </div>
                 )}
-                
+
                 <div className="flex items-center gap-2">
-                  <Image
-                    src="/icon.png"
-                    alt="NoirKit"
-                    width={24}
-                    height={24}
-                    className="rounded"
-                  />
+                  <button
+                    onClick={handleSignOut}
+                    className="p-2 rounded-lg hover:bg-gray-800 transition-colors text-red-400 hover:text-red-300"
+                    title="Sign Out"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -214,13 +233,11 @@ export default function DashboardLayout({
               )}
 
               {/* Main Content */}
-              <main className="transition-all duration-300">
-                {children}
-              </main>
+              <main className="transition-all duration-300">{children}</main>
             </div>
           </div>
         </div>
       </div>
     </ProtectedRoute>
-  )
+  );
 }
