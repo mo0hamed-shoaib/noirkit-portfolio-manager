@@ -24,6 +24,7 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
 
   const renderIcon = (iconPath: string, className = "w-5 h-5") => {
     if (!iconPath) return null;
@@ -86,6 +87,20 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
     [isTransitioning, currentImageIndex]
   );
 
+  // Initialize images loaded state
+  useEffect(() => {
+    setImagesLoaded(new Array(project.images.length).fill(false));
+  }, [project.images.length]);
+
+  // Handle image load
+  const handleImageLoad = (index: number) => {
+    setImagesLoaded((prev) => {
+      const newState = [...prev];
+      newState[index] = true;
+      return newState;
+    });
+  };
+
   // Auto-switch images every 5 seconds
   useEffect(() => {
     if (project.images.length > 1) {
@@ -124,15 +139,29 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
       {/* Image Carousel with Crossfade Transition */}
       <div className="relative w-full h-full">
         {project.images.map((image, index) => (
-          <Image
-            key={index}
-            src={image || "/placeholder.svg"}
-            alt={`${project.name} - Image ${index + 1}`}
-            fill
-            className={`object-cover absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              index === currentImageIndex ? "opacity-100 z-10" : "opacity-0 z-0"
-            }`}
-          />
+          <div key={index} className="absolute inset-0">
+            <Image
+              src={image || "/placeholder.svg"}
+              alt={`${project.name} - Image ${index + 1}`}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className={`object-cover transition-opacity duration-1000 ease-in-out ${
+                index === currentImageIndex
+                  ? "opacity-100 z-10"
+                  : "opacity-0 z-0"
+              }`}
+              priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
+              onLoad={() => handleImageLoad(index)}
+              quality={85}
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+            />
+            {/* Loading skeleton for images */}
+            {!imagesLoaded[index] && (
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse" />
+            )}
+          </div>
         ))}
 
         {/* Image Navigation - Only show if multiple images */}
@@ -141,16 +170,18 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
             <button
               onClick={prevImage}
               title="Previous image"
-              className="absolute left-2 bottom-2 w-6 h-6 bg-black/50 hover:bg-black/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-30 backdrop-blur-sm border border-white/10 hover:scale-105"
+              className="absolute left-2 bottom-2 w-8 h-8 bg-black/50 hover:bg-black/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-30 backdrop-blur-sm border border-white/10 hover:scale-105"
+              aria-label="Previous image"
             >
-              <ChevronLeft className="w-3 h-3 text-white" />
+              <ChevronLeft className="w-4 h-4 text-white" />
             </button>
             <button
               onClick={nextImage}
               title="Next image"
-              className="absolute right-2 bottom-2 w-6 h-6 bg-black/50 hover:bg-black/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-30 backdrop-blur-sm border border-white/10 hover:scale-105"
+              className="absolute right-2 bottom-2 w-8 h-8 bg-black/50 hover:bg-black/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-30 backdrop-blur-sm border border-white/10 hover:scale-105"
+              aria-label="Next image"
             >
-              <ChevronRight className="w-3 h-3 text-white" />
+              <ChevronRight className="w-4 h-4 text-white" />
             </button>
 
             {/* Image Indicators */}
@@ -160,9 +191,10 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
                   key={index}
                   onClick={(e) => goToImage(e, index)}
                   title={`Go to image ${index + 1}`}
-                  className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                  className={`w-2 h-2 rounded-full transition-colors ${
                     index === currentImageIndex ? "bg-white" : "bg-white/30"
                   }`}
+                  aria-label={`Go to image ${index + 1}`}
                 />
               ))}
             </div>
@@ -209,7 +241,11 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
         <div className="flex gap-3">
           {project.deployLink && (
             <CustomButton size="sm" asChild className="shadow-lg">
-              <Link href={project.deployLink} target="_blank">
+              <Link
+                href={project.deployLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <ExternalLink className="w-4 h-4 mr-1" />
                 Live Demo
               </Link>
@@ -222,7 +258,11 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
               asChild
               className="shadow-lg"
             >
-              <Link href={project.githubLink} target="_blank">
+              <Link
+                href={project.githubLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Github className="w-4 h-4 mr-1" />
                 Source
               </Link>
