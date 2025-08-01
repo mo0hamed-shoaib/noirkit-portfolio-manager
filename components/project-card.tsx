@@ -172,7 +172,7 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
 
       {/* Hover Overlay with Title, Description, Tech Stack, and Buttons */}
       <div
-        className={`absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col justify-center items-center p-4 transition-opacity duration-300 z-20 ${
+        className={`absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col justify-center items-center p-4 transition-opacity duration-300 z-20 rounded-lg ${
           isHovered ? "opacity-100" : "opacity-0"
         }`}
       >
