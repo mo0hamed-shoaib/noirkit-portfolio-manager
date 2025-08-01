@@ -4,6 +4,7 @@ import { useState, Suspense, useEffect } from "react";
 import { Menu } from "lucide-react";
 import { usePortfolioStore } from "@/lib/store";
 import { CustomButton } from "@/components/ui/custom-button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { CVModal } from "@/components/cv-modal";
 import { ContactModal } from "@/components/contact-modal";
 import { ProfileSection } from "@/components/sections/profile-section";
@@ -19,11 +20,12 @@ import {
   AchievementsSkeleton,
 } from "@/components/ui/skeleton";
 import { usePageTitle } from "@/lib/hooks/use-page-title";
+import { trackPageView } from "@/lib/analytics";
 
 function LoadingFallback() {
   return (
     <div
-      className="min-h-screen bg-black text-white p-6"
+      className="min-h-screen bg-background text-foreground p-6"
       role="main"
       aria-label="Loading portfolio content"
     >
@@ -89,6 +91,9 @@ export default function Portfolio() {
   });
 
   useEffect(() => {
+    // Track page view
+    trackPageView("/portfolio");
+
     // Fetch portfolio data for public view (works for both authenticated and public users)
     fetchAllData().catch(() => {
       // If fetch fails, it means no portfolio data exists yet
@@ -104,12 +109,12 @@ export default function Portfolio() {
   if (!personalInfo) {
     return (
       <div
-        className="min-h-screen bg-black text-white flex items-center justify-center p-6"
+        className="min-h-screen bg-background text-foreground flex items-center justify-center p-6"
         role="main"
       >
         <div className="text-center max-w-md space-y-6">
           <h1 className="text-3xl font-mono mb-4">Portfolio Not Set Up</h1>
-          <p className="text-gray-400 mb-6 leading-relaxed">
+          <p className="text-muted-foreground mb-6 leading-relaxed">
             This portfolio hasn't been configured yet. Sign in to the dashboard
             to set up your portfolio.
           </p>
@@ -129,11 +134,16 @@ export default function Portfolio() {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <div
-        className="min-h-screen bg-black text-white"
+        className="min-h-screen bg-background text-foreground"
         role="main"
         aria-label={`${personalInfo.name}'s portfolio`}
       >
         <div className="p-6 lg:p-8">
+          {/* Header with Theme Toggle */}
+          <div className="flex justify-end mb-6">
+            <ThemeToggle />
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-8 lg:gap-12 max-w-none">
             {/* Left Sidebar */}
             <aside
@@ -147,10 +157,7 @@ export default function Portfolio() {
               />
 
               {/* Subtle divider */}
-              <div
-                className="border-t border-white/10"
-                aria-hidden="true"
-              ></div>
+              <div className="border-t border-border" aria-hidden="true"></div>
 
               <SocialSection socialLinks={socialLinks} />
             </aside>
@@ -176,18 +183,12 @@ export default function Portfolio() {
               <ProjectsSection projects={projects} techStack={techStack} />
 
               {/* Subtle divider */}
-              <div
-                className="border-t border-white/10"
-                aria-hidden="true"
-              ></div>
+              <div className="border-t border-border" aria-hidden="true"></div>
 
               <TechStackSection techStack={techStack} />
 
               {/* Subtle divider */}
-              <div
-                className="border-t border-white/10"
-                aria-hidden="true"
-              ></div>
+              <div className="border-t border-border" aria-hidden="true"></div>
 
               <ContactAchievementsSection
                 achievements={achievements}
