@@ -11,6 +11,7 @@ This guide will help you set up your portfolio SaaS application with Supabase in
 ## Step 1: Supabase Project Setup
 
 1. **Create a new Supabase project**:
+
    - Go to [supabase.com](https://supabase.com)
    - Click "New Project"
    - Choose your organization
@@ -36,17 +37,33 @@ This guide will help you set up your portfolio SaaS application with Supabase in
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
    SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000
    \`\`\`
 
-## Step 3: Database Setup
+## Step 3: Configure Email Confirmation
+
+1. **Set up redirect URLs in Supabase**:
+
+   - Go to your Supabase Dashboard
+   - Navigate to Authentication > URL Configuration
+   - Add the following redirect URL: `http://localhost:3000/auth/confirm-email`
+   - Set Site URL to: `http://localhost:3000`
+
+2. **For production deployment**:
+   - Update the redirect URL to: `https://yourdomain.com/auth/confirm-email`
+   - Set Site URL to: `https://yourdomain.com`
+
+## Step 4: Database Setup
 
 1. **Run the database schema**:
+
    - Open Supabase Dashboard
    - Go to SQL Editor
    - Copy and paste the content from `scripts/create-database-schema.sql`
    - Click "Run"
 
 2. **Set up storage buckets**:
+
    - In SQL Editor, copy and paste the content from `scripts/create-storage-buckets.sql`
    - Click "Run"
 
@@ -55,13 +72,13 @@ This guide will help you set up your portfolio SaaS application with Supabase in
    - **Important**: Replace the user ID in the script with your actual user ID
    - Click "Run"
 
-## Step 4: Install Dependencies
+## Step 5: Install Dependencies
 
 \`\`\`bash
 npm install
 \`\`\`
 
-## Step 5: Run the Application
+## Step 6: Run the Application
 
 \`\`\`bash
 npm run dev
@@ -69,9 +86,10 @@ npm run dev
 
 The application will be available at `http://localhost:3000`.
 
-## Step 6: Create Your Account
+## Step 7: Create Your Account
 
 1. **Sign up**:
+
    - Go to `/auth/signup`
    - Create your account
    - Check your email for verification link
@@ -82,26 +100,31 @@ The application will be available at `http://localhost:3000`.
    - Sign in with your credentials
    - You'll be redirected to the dashboard
 
-## Step 7: Customize Your Portfolio
+## Step 8: Customize Your Portfolio
 
 1. **Update your profile**:
+
    - Go to Dashboard
    - Update your name, job title, bio, etc.
    - Upload a profile image
 
 2. **Add your projects**:
+
    - Go to Dashboard > Projects
    - Add your projects with descriptions, links, and images
 
 3. **Configure your tech stack**:
+
    - Go to Dashboard > Tech Stack
    - Add the technologies you use
 
 4. **Add achievements**:
+
    - Go to Dashboard > Achievements
    - Add your education, certifications, awards
 
 5. **Set up social links**:
+
    - Go to Dashboard > Social Links
    - Add your social media profiles
 
@@ -109,7 +132,7 @@ The application will be available at `http://localhost:3000`.
    - Go to Dashboard > Contact Form
    - Add/remove fields as needed
 
-## Step 8: View Your Portfolio
+## Step 9: View Your Portfolio
 
 - Your public portfolio is available at the root URL (`/`)
 - Share this URL with potential clients or employers
@@ -118,6 +141,7 @@ The application will be available at `http://localhost:3000`.
 ## Features
 
 ### For Portfolio Owners:
+
 - ✅ **Dashboard Management**: Full control over portfolio content
 - ✅ **File Uploads**: Profile images, project screenshots, CV files
 - ✅ **Drag & Drop Reordering**: Organize content order
@@ -127,6 +151,7 @@ The application will be available at `http://localhost:3000`.
 - ✅ **Analytics**: Basic stats overview
 
 ### For Visitors:
+
 - ✅ **Public Portfolio**: View complete portfolio without login
 - ✅ **Contact Forms**: Send messages to portfolio owner
 - ✅ **Responsive Design**: Works on all devices
@@ -144,14 +169,17 @@ The application will be available at `http://localhost:3000`.
 ### Common Issues:
 
 1. **"Permission denied" error in SQL**:
+
    - Make sure you're using the SQL Editor in Supabase Dashboard
    - Don't include the JWT secret line (it's already removed from our scripts)
 
 2. **Environment variables not working**:
+
    - Make sure your `.env.local` file is in the root directory
    - Restart your development server after adding environment variables
 
 3. **File uploads not working**:
+
    - Check that storage buckets were created successfully
    - Verify your Supabase service role key is correct
 
@@ -163,6 +191,7 @@ The application will be available at `http://localhost:3000`.
 ### Getting Help:
 
 If you encounter issues:
+
 1. Check the browser console for error messages
 2. Check the Supabase Dashboard logs
 3. Verify all environment variables are set correctly
