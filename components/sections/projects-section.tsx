@@ -6,6 +6,7 @@ import type { Project, TechStack } from "@/lib/types";
 import { ProjectCard } from "@/components/project-card";
 import { CustomButton } from "@/components/ui/custom-button";
 import { CustomInput } from "@/components/ui/custom-input";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface ProjectsSectionProps {
   projects: Project[];
@@ -138,34 +139,88 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
   return (
     <section>
       <div className="mb-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-mono font-bold">My Projects</h2>
-            <p className="text-gray-400 text-sm mt-1">
-              Showcasing my latest work
-              {hasActiveFilters && (
-                <span className="text-white/60 ml-2">
-                  ({filteredProjects.length} of {projects.length})
-                </span>
-              )}
-            </p>
-          </div>
-
-          {/* Filter Toggle Button */}
-          <CustomButton
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-            className="bg-black/50 backdrop-blur-sm border-white/30 hover:bg-white hover:text-black transition-all duration-200"
-          >
-            <Filter className="w-4 h-4 mr-1" />
-            Filters
-          </CustomButton>
+        <div>
+          <h2 className="text-2xl font-mono font-bold">My Projects</h2>
+          <p className="text-gray-400 text-sm mt-1">
+            Showcasing my latest work
+            {hasActiveFilters && (
+              <span className="text-white/60 ml-2">
+                ({filteredProjects.length} of {projects.length})
+              </span>
+            )}
+          </p>
         </div>
+
+        {/* Navigation Controls - All in one line */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <CustomButton
+                variant="outline"
+                size="sm"
+                onClick={goToPrevious}
+                disabled={isTransitioning}
+                className={`transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20 ${
+                  isTransitioning ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                <ChevronLeft className="w-4 h-4 mr-1" />
+                Previous
+              </CustomButton>
+              <span className="text-sm text-gray-400 px-2">
+                {currentIndex + 1} of {totalPages}
+              </span>
+              <CustomButton
+                variant="outline"
+                size="sm"
+                onClick={goToNext}
+                disabled={isTransitioning}
+                className={`transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20 ${
+                  isTransitioning ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                Next
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </CustomButton>
+            </div>
+
+            {/* Filter Toggle Button */}
+            <CustomButton
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+              className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
+            >
+              <Filter className="w-4 h-4 mr-1" />
+              Filters
+            </CustomButton>
+          </div>
+        )}
+
+        {/* Navigation Controls - When no pagination needed */}
+        {totalPages <= 1 && (
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+            </div>
+
+            {/* Filter Toggle Button */}
+            <CustomButton
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+              className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
+            >
+              <Filter className="w-4 h-4 mr-1" />
+              Filters
+            </CustomButton>
+          </div>
+        )}
 
         {/* Search and Filter Controls */}
         {showFilters && (
-          <div className="space-y-4 p-4 bg-gray-900/30 rounded-lg border border-white/10">
+          <div className="space-y-4 p-4 bg-black/50 border border-white/20 rounded-lg hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
             <div className="flex flex-col sm:flex-row gap-3">
               {/* Search Input */}
               <div className="flex-1">
@@ -186,7 +241,7 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
                 <select
                   value={selectedTechFilter}
                   onChange={(e) => handleFilterChange(e.target.value)}
-                  className="w-full px-3 py-2 bg-black/50 border border-white/30 rounded-lg text-white text-sm focus:outline-none focus:border-white/60 transition-colors"
+                  className="w-full px-3 py-2 bg-black/50 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-white/60 transition-colors font-mono tracking-wide"
                   aria-label="Filter by technology"
                 >
                   <option value="">All Technologies</option>
@@ -201,10 +256,10 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
               {/* Clear Filters */}
               {hasActiveFilters && (
                 <CustomButton
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
                   onClick={clearFilters}
-                  className="text-gray-400 hover:text-white"
+                  className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
                 >
                   <X className="w-4 h-4 mr-1" />
                   Clear
@@ -216,54 +271,17 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
             {hasActiveFilters && (
               <div className="flex flex-wrap gap-2">
                 {searchTerm && (
-                  <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-white">
+                  <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-white font-mono tracking-wide">
                     Search: "{searchTerm}"
                   </span>
                 )}
                 {selectedTechFilter && (
-                  <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-white">
+                  <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-white font-mono tracking-wide">
                     Tech: {selectedTechFilter}
                   </span>
                 )}
               </div>
             )}
-          </div>
-        )}
-
-        {/* Navigation Controls */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2">
-            <CustomButton
-              variant="outline"
-              size="sm"
-              onClick={goToPrevious}
-              disabled={isTransitioning}
-              className={`bg-black/50 backdrop-blur-sm border-white/30 hover:bg-white hover:text-black transition-all duration-200 ${
-                isTransitioning
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:scale-105"
-              }`}
-            >
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              Previous
-            </CustomButton>
-            <span className="text-sm text-gray-400 px-2">
-              {currentIndex + 1} of {totalPages}
-            </span>
-            <CustomButton
-              variant="outline"
-              size="sm"
-              onClick={goToNext}
-              disabled={isTransitioning}
-              className={`bg-black/50 backdrop-blur-sm border-white/30 hover:bg-white hover:text-black transition-all duration-200 ${
-                isTransitioning
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:scale-105"
-              }`}
-            >
-              Next
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </CustomButton>
           </div>
         )}
       </div>
@@ -343,7 +361,7 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
               variant="outline"
               size="sm"
               onClick={clearFilters}
-              className="hover:scale-105"
+              className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
             >
               Clear Filters
             </CustomButton>

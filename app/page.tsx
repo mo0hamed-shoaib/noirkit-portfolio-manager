@@ -120,7 +120,7 @@ export default function Portfolio() {
           </p>
           <CustomButton
             asChild
-            className="transition-all duration-200 hover:scale-105"
+            className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
           >
             <a href="/auth/login" aria-label="Navigate to dashboard login page">
               Go to Dashboard
@@ -139,10 +139,8 @@ export default function Portfolio() {
         aria-label={`${personalInfo.name}'s portfolio`}
       >
         <div className="p-6 lg:p-8">
-          {/* Header with Theme Toggle */}
-          <div className="flex justify-end mb-6">
-            <ThemeToggle />
-          </div>
+          {/* Header - Theme toggle moved to projects section */}
+          <div className="mb-6">{/* Empty div to maintain spacing */}</div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-8 lg:gap-12 max-w-none">
             {/* Left Sidebar */}
@@ -171,10 +169,10 @@ export default function Portfolio() {
               {/* Mobile Menu Button */}
               <div className="flex justify-end lg:hidden">
                 <CustomButton
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
                   aria-label="Open mobile navigation menu"
-                  className="transition-all duration-200 hover:scale-110"
+                  className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
                 >
                   <Menu className="w-6 h-6" />
                 </CustomButton>
