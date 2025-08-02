@@ -1,28 +1,54 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { Plus, Edit, Trash2, Share2, ExternalLink, GripVertical, X } from "lucide-react"
-import { usePortfolioStore } from "@/lib/store"
-import type { SocialLink } from "@/lib/types"
-import { CustomButton } from "@/components/ui/custom-button"
-import { CustomInput } from "@/components/ui/custom-input"
-import { Label } from "@/components/ui/label"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { SortableList } from "@/components/ui/sortable-list"
-import { useToast } from "@/components/ui/toast"
+import type React from "react";
+import { useState } from "react";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Share2,
+  ExternalLink,
+  GripVertical,
+  X,
+  Github,
+  Linkedin,
+  Twitter,
+  Instagram,
+  Facebook,
+  Youtube,
+  Globe,
+} from "lucide-react";
+import { usePortfolioStore } from "@/lib/store";
+import type { SocialLink } from "@/lib/types";
+import { CustomInput } from "@/components/ui/custom-input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { SortableList } from "@/components/ui/sortable-list";
+import { useToast } from "@/components/ui/toast";
+import { DashboardButton } from "@/components/ui/dashboard-button";
 
 export default function SocialLinksPage() {
-  const { socialLinks, addSocialLink, updateSocialLink, deleteSocialLink, reorderSocialLinks } = usePortfolioStore()
-  const { showToast } = useToast()
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingLink, setEditingLink] = useState<SocialLink | null>(null)
-  const [isReordering, setIsReordering] = useState(false)
-  const [formData, setFormData] = useState<Omit<SocialLink, "id">>({
-    platform: "",
+  const {
+    socialLinks,
+    addSocialLink,
+    updateSocialLink,
+    deleteSocialLink,
+    reorderSocialLinks,
+  } = usePortfolioStore();
+  const { showToast } = useToast();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingLink, setEditingLink] = useState<SocialLink | null>(null);
+  const [isReordering, setIsReordering] = useState(false);
+  const [formData, setFormData] = useState<
+    Omit<SocialLink, "id" | "platform" | "icon">
+  >({
     url: "",
-    icon: "",
-  })
+  });
 
   // Popular social media platforms with their icons
   const popularPlatforms = [
@@ -42,169 +68,200 @@ export default function SocialLinksPage() {
       name: "Instagram",
       icon: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z",
     },
-  ]
+  ];
 
   const resetForm = () => {
     setFormData({
-      platform: "",
       url: "",
-      icon: "",
-    })
-    setEditingLink(null)
-  }
+    });
+    setEditingLink(null);
+  };
 
   const openModal = (link?: SocialLink) => {
     if (link) {
-      setEditingLink(link)
-      setFormData(link)
+      setEditingLink(link);
+      setFormData(link);
     } else {
-      resetForm()
+      resetForm();
     }
-    setIsModalOpen(true)
-  }
+    setIsModalOpen(true);
+  };
 
   const closeModal = () => {
-    setIsModalOpen(false)
-    resetForm()
-  }
+    setIsModalOpen(false);
+    resetForm();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.platform.trim() || !formData.url.trim() || !formData.icon.trim()) {
-      showToast("Please fill in all required fields", "error")
-      return
+    e.preventDefault();
+    if (!formData.url.trim()) {
+      showToast("Please fill in the URL field", "error");
+      return;
     }
+
+    // Extract platform name from URL
+    const url = formData.url.toLowerCase();
+    let platformName = "Social Link";
+
+    if (url.includes("twitter.com") || url.includes("x.com")) {
+      platformName = "Twitter/X";
+    } else if (url.includes("linkedin.com")) {
+      platformName = "LinkedIn";
+    } else if (url.includes("github.com")) {
+      platformName = "GitHub";
+    } else if (url.includes("instagram.com")) {
+      platformName = "Instagram";
+    } else if (url.includes("facebook.com")) {
+      platformName = "Facebook";
+    } else if (url.includes("youtube.com")) {
+      platformName = "YouTube";
+    } else if (url.includes("tiktok.com")) {
+      platformName = "TikTok";
+    } else if (url.includes("discord.com")) {
+      platformName = "Discord";
+    } else if (url.includes("telegram.me")) {
+      platformName = "Telegram";
+    } else if (url.includes("reddit.com")) {
+      platformName = "Reddit";
+    }
+
+    const formDataWithPlatform = {
+      ...formData,
+      platform: platformName,
+      icon: "", // Empty icon since we use platform-based icons
+    };
 
     try {
       if (editingLink) {
-        await updateSocialLink(editingLink.id, formData)
-        showToast("Social link updated successfully!", "success")
+        await updateSocialLink(editingLink.id, formDataWithPlatform);
+        showToast("Social link updated successfully!", "success");
       } else {
-        await addSocialLink(formData)
-        showToast("Social link added successfully!", "success")
+        await addSocialLink(formDataWithPlatform);
+        showToast("Social link added successfully!", "success");
       }
-      closeModal()
+      closeModal();
     } catch (error) {
-      showToast("Failed to save social link", "error")
+      showToast("Failed to save social link", "error");
     }
-  }
+  };
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this social link?")) {
       try {
-        await deleteSocialLink(id)
-        showToast("Social link deleted successfully!", "success")
+        await deleteSocialLink(id);
+        showToast("Social link deleted successfully!", "success");
       } catch (error) {
-        showToast("Failed to delete social link", "error")
+        showToast("Failed to delete social link", "error");
       }
     }
-  }
-
-  const handlePlatformSelect = (platformName: string) => {
-    const platform = popularPlatforms.find((p) => p.name === platformName)
-    if (platform) {
-      setFormData((prev) => ({
-        ...prev,
-        platform: platform.name,
-        icon: platform.icon,
-      }))
-    }
-  }
+  };
 
   const handleReorder = async (reorderedLinks: SocialLink[]) => {
     try {
-      await reorderSocialLinks(reorderedLinks)
-      showToast("Social links reordered successfully!", "success")
+      await reorderSocialLinks(reorderedLinks);
+      showToast("Social links reordered successfully!", "success");
     } catch (error) {
-      showToast("Failed to reorder social links", "error")
+      showToast("Failed to reorder social links", "error");
     }
-  }
+  };
 
-  const renderIcon = (iconPath: string, className = "w-5 h-5") => {
-    if (!iconPath) return null
-    try {
-      // Handle full SVG or just path data
-      if (iconPath.includes("<svg")) {
-        return <div className={className} dangerouslySetInnerHTML={{ __html: iconPath }} />
-      } else {
-        return (
-          <svg
-            className={className}
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            style={{ filter: "drop-shadow(0 0 1px rgba(255,255,255,0.3))" }}
-          >
-            <path d={iconPath} />
-          </svg>
-        )
-      }
-    } catch {
-      return (
-        <div className={`${className} bg-red-500/20 border border-red-500 rounded flex items-center justify-center`}>
-          <X className="w-3 h-3 text-red-500" />
-        </div>
-      )
-    }
-  }
+  const getIconComponent = (platform: string) => {
+    const iconMap: Record<string, React.ComponentType<any>> = {
+      github: Github,
+      linkedin: Linkedin,
+      twitter: Twitter,
+      "twitter/x": Twitter,
+      x: Twitter,
+      instagram: Instagram,
+      facebook: Facebook,
+      youtube: Youtube,
+      // Add more mappings as needed
+    };
 
-  const renderSocialLinkItem = (link: SocialLink, index: number, isDragging: boolean) => (
+    return iconMap[platform.toLowerCase()] || Globe; // Globe as fallback
+  };
+
+  const renderSocialLinkItem = (
+    link: SocialLink,
+    index: number,
+    isDragging: boolean
+  ) => (
     <div
       key={link.id}
-      className={`border border-white/20 rounded-xl p-6 bg-gray-900/50 hover:bg-gray-900/70 transition-all duration-200 group ${
+      className={`border border-white/20 rounded-xl p-6 bg-black/50 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm group ${
         isDragging ? "scale-105 shadow-lg opacity-75" : ""
       }`}
     >
-      <div className="flex items-start justify-between">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {isReordering && (
             <div className="cursor-grab active:cursor-grabbing">
               <GripVertical className="w-4 h-4 text-gray-500" />
             </div>
           )}
-          <div className="w-10 h-10 text-white group-hover:scale-110 transition-transform duration-200">
-            {renderIcon(link.icon, "w-full h-full")}
+          <div className="w-12 h-12 text-white group-hover:scale-110 transition-transform duration-200 flex items-center justify-center">
+            {(() => {
+              const IconComponent = getIconComponent(link.platform);
+              return <IconComponent className="w-8 h-8" />;
+            })()}
           </div>
-          <div>
-            <h3 className="font-medium">{link.platform}</h3>
-            <p className="text-sm text-gray-400 truncate max-w-[200px]">{link.url}</p>
+          <div className="flex-1">
+            <p className="text-white font-mono tracking-wide">
+              {link.platform}
+            </p>
           </div>
         </div>
         {!isReordering && (
           <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            <CustomButton variant="ghost" size="sm" asChild>
+            <DashboardButton variant="ghost" size="sm" asChild>
               <a href={link.url} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="w-3 h-3" />
               </a>
-            </CustomButton>
-            <CustomButton variant="ghost" size="sm" onClick={() => openModal(link)}>
+            </DashboardButton>
+            <DashboardButton
+              variant="ghost"
+              size="sm"
+              onClick={() => openModal(link)}
+            >
               <Edit className="w-3 h-3" />
-            </CustomButton>
-            <CustomButton variant="ghost" size="sm" onClick={() => handleDelete(link.id)}>
+            </DashboardButton>
+            <DashboardButton
+              variant="ghost"
+              size="sm"
+              onClick={() => handleDelete(link.id)}
+            >
               <Trash2 className="w-3 h-3" />
-            </CustomButton>
+            </DashboardButton>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-6 space-y-6 bg-black min-h-screen">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-mono mb-2">Social Links</h1>
-          <p className="text-gray-400">Manage your social media presence</p>
+          <h1 className="text-3xl font-bold text-white font-mono tracking-wide">
+            Social Links
+          </h1>
+          <p className="text-gray-400 mt-2 font-mono text-sm tracking-wide">
+            Manage your social media presence
+          </p>
         </div>
         <div className="flex gap-3">
           {socialLinks.length > 0 && (
-            <CustomButton variant={isReordering ? "default" : "outline"} onClick={() => setIsReordering(!isReordering)}>
+            <DashboardButton
+              variant={isReordering ? "default" : "outline"}
+              onClick={() => setIsReordering(!isReordering)}
+            >
               {isReordering ? "Done" : "Reorder"}
-            </CustomButton>
+            </DashboardButton>
           )}
-          <CustomButton onClick={() => openModal()}>
+          <DashboardButton onClick={() => openModal()}>
             <Plus className="w-4 h-4 mr-2" />
             Add Social Link
-          </CustomButton>
+          </DashboardButton>
         </div>
       </div>
 
@@ -219,16 +276,20 @@ export default function SocialLinksPage() {
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {socialLinks.map((link, index) => renderSocialLinkItem(link, index, false))}
+          {socialLinks.map((link, index) =>
+            renderSocialLinkItem(link, index, false)
+          )}
         </div>
       )}
 
       {/* Empty State */}
       {socialLinks.length === 0 && (
-        <div className="col-span-full border border-white/20 rounded-xl p-12 text-center bg-gray-900/30">
+        <div className="col-span-full border border-white/20 rounded-xl p-12 text-center bg-black/30 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
           <Share2 className="w-12 h-12 text-gray-500 mx-auto mb-4" />
           <p className="text-gray-500 mb-4">No social links added yet</p>
-          <CustomButton onClick={() => openModal()}>Add Your First Social Link</CustomButton>
+          <DashboardButton onClick={() => openModal()}>
+            Add Your First Social Link
+          </DashboardButton>
         </div>
       )}
 
@@ -236,80 +297,41 @@ export default function SocialLinksPage() {
       <Dialog open={isModalOpen} onOpenChange={closeModal}>
         <DialogContent className="max-w-2xl bg-black border border-white text-white max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingLink ? "Edit Social Link" : "Add New Social Link"}</DialogTitle>
+            <DialogTitle>
+              {editingLink ? "Edit Social Link" : "Add New Social Link"}
+            </DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4">
-              <Label>Select Platform</Label>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {popularPlatforms.map((platform) => (
-                  <CustomButton
-                    key={platform.name}
-                    type="button"
-                    variant={formData.platform === platform.name ? "default" : "outline"}
-                    size="sm"
-                    className="flex flex-col items-center gap-2 h-auto py-3"
-                    onClick={() => handlePlatformSelect(platform.name)}
-                  >
-                    {renderIcon(platform.icon, "w-5 h-5")}
-                    <span className="text-xs">{platform.name}</span>
-                  </CustomButton>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="platform">Platform Name *</Label>
-              <CustomInput
-                id="platform"
-                value={formData.platform}
-                onChange={(e) => setFormData((prev) => ({ ...prev, platform: e.target.value }))}
-                placeholder="e.g., Twitter, LinkedIn, GitHub"
-                required
-              />
-            </div>
-
             <div className="space-y-2">
               <Label htmlFor="url">Profile URL *</Label>
               <CustomInput
                 id="url"
                 type="url"
                 value={formData.url}
-                onChange={(e) => setFormData((prev) => ({ ...prev, url: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, url: e.target.value }))
+                }
                 placeholder="https://twitter.com/username"
                 required
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="icon">SVG Icon *</Label>
-              <CustomInput
-                variant="textarea"
-                id="icon"
-                value={formData.icon}
-                onChange={(e) => setFormData((prev) => ({ ...prev, icon: e.target.value }))}
-                placeholder="Paste full SVG code or just the path data"
-                rows={3}
-                required
-              />
-              {formData.icon && (
-                <div className="border border-white/20 rounded-lg p-4 bg-gray-900/50">
-                  <p className="text-sm text-gray-400 mb-2">Preview:</p>
-                  <div className="flex items-center justify-center">{renderIcon(formData.icon, "w-8 h-8")}</div>
-                </div>
-              )}
-            </div>
-
             <div className="flex gap-4">
-              <CustomButton type="submit">{editingLink ? "Update Link" : "Add Link"}</CustomButton>
-              <CustomButton type="button" variant="outline" onClick={closeModal}>
+              <DashboardButton type="submit">
+                {editingLink ? "Update Link" : "Add Link"}
+              </DashboardButton>
+              <DashboardButton
+                type="button"
+                variant="outline"
+                onClick={closeModal}
+              >
                 Cancel
-              </CustomButton>
+              </DashboardButton>
             </div>
           </form>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

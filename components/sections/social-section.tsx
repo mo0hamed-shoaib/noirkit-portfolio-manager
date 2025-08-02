@@ -1,7 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { Share2, Copy, Check } from "lucide-react";
+import {
+  Share2,
+  Copy,
+  Check,
+  Github,
+  Linkedin,
+  Twitter,
+  Instagram,
+  Facebook,
+  Youtube,
+  Globe,
+} from "lucide-react";
 import type { SocialLink } from "@/lib/types";
 import { CustomButton } from "@/components/ui/custom-button";
 import { trackSocialLinkClick } from "@/lib/analytics";
@@ -14,17 +25,21 @@ interface SocialSectionProps {
 export function SocialSection({ socialLinks }: SocialSectionProps) {
   const [copied, setCopied] = useState(false);
 
-  const renderIcon = (iconPath: string, className = "w-5 h-5") => (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      style={{ filter: "drop-shadow(0 0 1px rgba(255,255,255,0.3))" }}
-      aria-hidden="true"
-    >
-      <path d={iconPath} />
-    </svg>
-  );
+  const getIconComponent = (platform: string) => {
+    const iconMap: Record<string, React.ComponentType<any>> = {
+      github: Github,
+      linkedin: Linkedin,
+      twitter: Twitter,
+      "twitter/x": Twitter,
+      x: Twitter,
+      instagram: Instagram,
+      facebook: Facebook,
+      youtube: Youtube,
+      // Add more mappings as needed
+    };
+
+    return iconMap[platform.toLowerCase()] || Globe; // Globe as fallback
+  };
 
   const handleSocialLinkClick = (platform: string, url: string) => {
     trackSocialLinkClick(platform, url);
@@ -83,7 +98,7 @@ export function SocialSection({ socialLinks }: SocialSectionProps) {
               variant="outline"
               size="sm"
               onClick={handleSharePortfolio}
-              className="flex-1 hover:scale-105 transition-all duration-200"
+              className="flex-1 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
             >
               <Share2 className="w-4 h-4 mr-2" />
               Share
@@ -92,7 +107,7 @@ export function SocialSection({ socialLinks }: SocialSectionProps) {
               variant="outline"
               size="sm"
               onClick={handleCopyLink}
-              className="flex-1 hover:scale-105 transition-all duration-200"
+              className="flex-1 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
             >
               {copied ? (
                 <>
@@ -116,27 +131,27 @@ export function SocialSection({ socialLinks }: SocialSectionProps) {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-mono font-semibold mb-4">Connect</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
           {socialLinks.map((link) => (
             <CustomButton
               key={link.id}
               variant="outline"
               size="sm"
               asChild
-              className="h-12 px-4 hover:scale-105 transition-all duration-200 hover:shadow-lg hover:shadow-white/20"
+              className="h-12 w-12 p-0 hover:scale-105 transition-all duration-200 hover:shadow-lg hover:shadow-white/20"
             >
               <Link
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Visit ${link.platform} profile`}
-                className="flex items-center gap-3 w-full"
+                className="flex items-center justify-center w-full h-full"
                 onClick={() => handleSocialLinkClick(link.platform, link.url)}
               >
-                {renderIcon(link.icon, "w-5 h-5 flex-shrink-0")}
-                <span className="text-sm font-medium truncate">
-                  {link.platform}
-                </span>
+                {(() => {
+                  const IconComponent = getIconComponent(link.platform);
+                  return <IconComponent className="w-6 h-6" />;
+                })()}
               </Link>
             </CustomButton>
           ))}
@@ -153,7 +168,7 @@ export function SocialSection({ socialLinks }: SocialSectionProps) {
             variant="outline"
             size="sm"
             onClick={handleSharePortfolio}
-            className="flex-1 hover:scale-105 transition-all duration-200"
+            className="flex-1 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
           >
             <Share2 className="w-4 h-4 mr-2" />
             Share
@@ -162,7 +177,7 @@ export function SocialSection({ socialLinks }: SocialSectionProps) {
             variant="outline"
             size="sm"
             onClick={handleCopyLink}
-            className="flex-1 hover:scale-105 transition-all duration-200"
+            className="flex-1 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
           >
             {copied ? (
               <>
