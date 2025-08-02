@@ -39,6 +39,11 @@ class Analytics {
   }
 
   private initializeAnalytics(): void {
+    // Only initialize on client side
+    if (typeof window === 'undefined') {
+      return;
+    }
+
     // Track page views
     this.trackPageView(window.location.pathname)
     
@@ -71,8 +76,8 @@ class Analytics {
       page,
       timestamp: new Date().toISOString(),
       sessionId: this.sessionId,
-      referrer: document.referrer,
-      userAgent: navigator.userAgent
+      referrer: typeof document !== 'undefined' ? document.referrer : undefined,
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined
     }
 
     this.pageViews.push(pageView)
@@ -124,6 +129,10 @@ class Analytics {
   }
 
   private saveToStorage(): void {
+    if (typeof localStorage === 'undefined') {
+      return;
+    }
+    
     try {
       localStorage.setItem('noirkit_analytics', JSON.stringify({
         events: this.events.slice(-100), // Keep last 100 events
@@ -197,18 +206,33 @@ class Analytics {
   }
 }
 
-// Create singleton instance
-export const analytics = new Analytics()
+// Create lazy singleton instance
+let analyticsInstance: Analytics | null = null
+
+const getAnalytics = (): Analytics => {
+  if (!analyticsInstance) {
+    analyticsInstance = new Analytics()
+  }
+  return analyticsInstance
+}
 
 // Export convenience functions
-export const trackEvent = (event: string, data?: Record<string, any>) => analytics.trackEvent(event, data)
-export const trackPageView = (page: string) => analytics.trackPageView(page)
+export const trackEvent = (event: string, data?: Record<string, any>) => getAnalytics().trackEvent(event, data)
+export const trackPageView = (page: string) => getAnalytics().trackPageView(page)
 export const trackContactSubmission = (formType: string, success: boolean, errorMessage?: string) => 
-  analytics.trackContactSubmission(formType, success, errorMessage)
+  getAnalytics().trackContactSubmission(formType, success, errorMessage)
 export const trackProjectView = (projectId: string, projectName: string) => 
-  analytics.trackProjectView(projectId, projectName)
-export const trackCVDownload = () => analytics.trackCVDownload()
+  getAnalytics().trackProjectView(projectId, projectName)
+export const trackCVDownload = () => getAnalytics().trackCVDownload()
 export const trackSocialLinkClick = (platform: string, url: string) => 
-  analytics.trackSocialLinkClick(platform, url)
+  getAnalytics().trackSocialLinkClick(platform, url)
 export const trackFilterUsage = (filterType: string, value: string) => 
-  analytics.trackFilterUsage(filterType, value) 
+  getAnalytics().trackFilterUsage(filterType, value)
+
+// Export the analytics instance for direct access if needed
+export const analytics = {
+  get: getAnalytics,
+  getAnalytics: () => getAnalytics().getAnalytics(),
+  getSummary: () => getAnalytics().getSummary(),
+  exportData: () => getAnalytics().exportData()
+} 
