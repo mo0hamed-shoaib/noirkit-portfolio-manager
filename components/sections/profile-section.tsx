@@ -14,7 +14,7 @@ export function ProfileSection({
   onViewCV,
 }: ProfileSectionProps) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Profile Header */}
       <div className="flex items-center gap-4 group">
         <div className="relative">
@@ -39,7 +39,7 @@ export function ProfileSection({
       </div>
 
       {/* Bio */}
-      <div className="space-y-6">
+      <div className="space-y-4">
         <p className="text-gray-300 text-lg leading-relaxed font-light transition-all duration-200 hover:text-white/90">
           {personalInfo.bio}
         </p>
