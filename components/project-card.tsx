@@ -240,7 +240,11 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
         {/* Action Buttons */}
         <div className="flex gap-3">
           {project.deployLink && (
-            <CustomButton size="sm" asChild className="shadow-lg">
+            <CustomButton
+              size="sm"
+              asChild
+              className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
+            >
               <Link
                 href={project.deployLink}
                 target="_blank"
@@ -256,7 +260,7 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
               variant="outline"
               size="sm"
               asChild
-              className="shadow-lg"
+              className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
             >
               <Link
                 href={project.githubLink}

@@ -51,6 +51,7 @@ export function ProfileSection({
             More about Me
           </CustomButton>
           <CustomButton
+            variant="outline"
             onClick={onViewCV}
             className="flex-1 sm:flex-none transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
           >
