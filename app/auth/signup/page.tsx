@@ -9,6 +9,7 @@ import { CustomButton } from "@/components/ui/custom-button";
 import { CustomInput } from "@/components/ui/custom-input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, ArrowLeft, CheckCircle } from "lucide-react";
+import { DashboardButton } from "@/components/ui/dashboard-button";
 
 export default function SignupPage() {
   const [name, setName] = useState("");
@@ -264,16 +265,18 @@ export default function SignupPage() {
             )}
           </div>
 
-          <CustomButton
+          <DashboardButton
             type="submit"
-            className="w-full bg-transparent border border-white text-white hover:bg-white hover:text-black transition-all duration-300"
+            className="w-full"
             disabled={
               loading ||
-              (password && confirmPassword && password !== confirmPassword)
+              Boolean(
+                password && confirmPassword && password !== confirmPassword
+              )
             }
           >
             {loading ? "Creating account..." : "Create Account"}
-          </CustomButton>
+          </DashboardButton>
         </form>
 
         <div className="mt-6 text-center">

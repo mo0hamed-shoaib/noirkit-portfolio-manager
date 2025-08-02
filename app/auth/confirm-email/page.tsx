@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CheckCircle, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { DashboardButton } from "@/components/ui/dashboard-button";
 
 export default function ConfirmEmailPage() {
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -61,13 +62,15 @@ export default function ConfirmEmailPage() {
           </p>
 
           <div className="space-y-4">
-            <Link
-              href="/auth/login"
-              className="inline-flex items-center gap-2 bg-white text-black hover:bg-gray-100 transition-all duration-300 px-6 py-3 rounded font-medium"
-            >
-              Sign In to Your Account
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <DashboardButton asChild>
+              <Link
+                href="/auth/login"
+                className="inline-flex items-center gap-2"
+              >
+                Sign In to Your Account
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </DashboardButton>
           </div>
         </div>
 
