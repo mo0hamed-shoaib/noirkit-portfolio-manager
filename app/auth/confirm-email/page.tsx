@@ -68,24 +68,18 @@ export default function ConfirmEmailPage() {
               Sign In to Your Account
               <ArrowRight className="w-4 h-4" />
             </Link>
-
-            <div className="pt-4 border-t border-gray-700">
-              <Link
-                href="/"
-                className="text-gray-400 hover:text-white transition-colors text-sm"
-              >
-                View Public Portfolio
-              </Link>
-            </div>
           </div>
         </div>
 
         <div className="text-gray-500 text-sm">
           <p>
-            Having trouble?{" "}
-            <Link href="/auth/login" className="text-white hover:underline">
-              Try signing in
-            </Link>
+            Having trouble? Contact me at{" "}
+            <a
+              href="mailto:mohamed.g.shoaib@gmail.com"
+              className="text-white hover:underline"
+            >
+              mohamed.g.shoaib@gmail.com
+            </a>
           </p>
         </div>
       </div>
