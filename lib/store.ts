@@ -120,14 +120,17 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
         .order("order_index")
 
       // Fetch contact form
-      const { data: contactForm, error: contactFormError } = await supabase
+      const { data: contactForms, error: contactFormError } = await supabase
         .from("contact_form")
         .select(`
           *,
           contact_form_fields (*)
         `)
         .eq("user_id", userId)
-        .single()
+        .order("created_at", { ascending: false })
+
+      // Use the most recent contact form, or the first one if multiple exist
+      const contactForm = contactForms && contactForms.length > 0 ? contactForms[0] : null
 
       // Transform data to match frontend types
       const transformedPersonalInfo: PersonalInfo | null = profile
@@ -613,17 +616,59 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
       } = await supabase.auth.getUser()
       if (!user) throw new Error("No authenticated user")
 
-      const { error } = await supabase.from("contact_form").upsert({
-        user_id: user.id,
-        title: form.title,
-        description: form.description,
-        show_contact_info: form.showContactInfo,
-      })
+      const currentContactForm = get().contactForm
+
+      let data
+      let error
+
+      if (currentContactForm && currentContactForm.id) {
+        // Update existing contact form
+        const result = await supabase
+          .from("contact_form")
+          .update({
+            title: form.title,
+            description: form.description,
+            show_contact_info: form.showContactInfo,
+          })
+          .eq("id", currentContactForm.id)
+          .select()
+          .single()
+        
+        data = result.data
+        error = result.error
+      } else {
+        // Create new contact form
+        const result = await supabase
+          .from("contact_form")
+          .insert({
+            user_id: user.id,
+            title: form.title,
+            description: form.description,
+            show_contact_info: form.showContactInfo,
+          })
+          .select()
+          .single()
+        
+        data = result.data
+        error = result.error
+      }
 
       if (error) throw error
 
       set((state) => ({
-        contactForm: state.contactForm ? { ...state.contactForm, ...form } : null,
+        contactForm: state.contactForm 
+          ? { 
+              ...state.contactForm, 
+              ...form,
+              id: data.id 
+            } 
+          : {
+              id: data.id,
+              title: form.title || "Get In Touch",
+              description: form.description || "Let's discuss your next project",
+              showContactInfo: form.showContactInfo || false,
+              fields: []
+            },
       }))
     } catch (error: any) {
       set({ error: error.message })
@@ -632,8 +677,63 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
 
   addContactField: async (field) => {
     try {
-      const contactForm = get().contactForm
-      if (!contactForm) throw new Error("No contact form found")
+      let contactForm = get().contactForm
+      
+      // If no contact form exists, create one first
+      if (!contactForm || !contactForm.id) {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+        if (!user) throw new Error("No authenticated user")
+
+        // Check if there's an existing contact form for this user
+        const { data: existingForms, error: fetchError } = await supabase
+          .from("contact_form")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(1)
+
+        if (fetchError) throw fetchError
+
+        if (existingForms && existingForms.length > 0) {
+          // Use existing contact form
+          const existingForm = existingForms[0]
+          contactForm = {
+            id: existingForm.id,
+            title: existingForm.title,
+            description: existingForm.description,
+            showContactInfo: existingForm.show_contact_info,
+            fields: [],
+          }
+        } else {
+          // Create new contact form
+          const { data: newContactForm, error: createError } = await supabase
+            .from("contact_form")
+            .insert({
+              user_id: user.id,
+              title: "Get In Touch",
+              description: "Let's discuss your next project",
+              show_contact_info: false,
+            })
+            .select()
+            .single()
+
+          if (createError) throw createError
+
+          contactForm = {
+            id: newContactForm.id,
+            title: newContactForm.title,
+            description: newContactForm.description,
+            showContactInfo: newContactForm.show_contact_info,
+            fields: [],
+          }
+        }
+
+        set((state) => ({
+          contactForm,
+        }))
+      }
 
       const { data, error } = await supabase
         .from("contact_form_fields")
