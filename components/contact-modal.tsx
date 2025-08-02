@@ -338,8 +338,9 @@ export function ContactModal({ isOpen, onClose }: ContactModalProps) {
 
               <CustomButton
                 type="submit"
+                variant="outline"
                 disabled={isSubmitting}
-                className="w-full mt-6 transition-all duration-200 hover:scale-105"
+                className="w-full mt-6 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
               >
                 {isSubmitting ? "Sending..." : "Send Message"}
               </CustomButton>
