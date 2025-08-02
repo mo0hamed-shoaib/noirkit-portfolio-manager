@@ -20,6 +20,7 @@ import {
   X,
   Zap,
   HardDrive,
+  BarChart3,
 } from "lucide-react";
 import { CustomButton } from "@/components/ui/custom-button";
 import { DashboardButton } from "@/components/ui/dashboard-button";
@@ -38,6 +39,7 @@ const navigation = [
   { name: "Contact Form", href: "/dashboard/contact", icon: Mail },
   { name: "CV Management", href: "/dashboard/cv", icon: FileText },
   { name: "Storage", href: "/dashboard/storage", icon: HardDrive },
+  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
   { name: "Data Backup", href: "/dashboard/backup", icon: Database },
 ];
 
@@ -92,7 +94,7 @@ export default function DashboardLayout({
           >
             <div className="flex flex-col h-full">
               {/* Brand Header */}
-              <div className="flex-shrink-0 p-4 border-b border-white/20">
+              <div className="flex-shrink-0 p-3 border-b border-white/20">
                 <div className="flex items-center gap-3 mb-4">
                   <Image
                     src="/icon.png"
@@ -141,7 +143,7 @@ export default function DashboardLayout({
               </div>
 
               {/* Navigation */}
-              <nav className="flex-1 p-3 space-y-1">
+              <nav className="flex-1 p-2 space-y-1">
                 {navigation.map((item) => {
                   const isActive = pathname === item.href;
                   return (
@@ -150,7 +152,7 @@ export default function DashboardLayout({
                       href={item.href}
                       onClick={() => setSidebarOpen(false)}
                       className={cn(
-                        "flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200",
+                        "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200",
                         isActive
                           ? "bg-white/10 text-white border border-white/20 shadow-lg"
                           : "text-gray-300 hover:bg-white/5 hover:text-white hover:border-white/10"
@@ -164,20 +166,19 @@ export default function DashboardLayout({
                             : "text-gray-400 group-hover:text-white"
                         )}
                       />
-                      <span className="font-medium">{item.name}</span>
+                      <span className="font-medium text-sm">{item.name}</span>
                     </Link>
                   );
                 })}
               </nav>
 
               {/* User Info */}
-              <div className="flex-shrink-0 p-3 border-t border-white/20">
+              <div className="flex-shrink-0 p-2 border-t border-white/20">
                 {user && (
                   <div className="p-2 bg-black/50 border border-white/20 rounded-lg">
                     <p className="text-xs text-gray-400 mb-1">Signed in as:</p>
-                    <p className="text-xs font-medium truncate">{user.email}</p>
                     {personalInfo?.name && (
-                      <p className="text-xs text-gray-400 mt-1">
+                      <p className="text-xs font-medium text-white">
                         {personalInfo.name}
                       </p>
                     )}
