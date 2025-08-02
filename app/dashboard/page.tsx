@@ -1,26 +1,35 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { Upload, Mail } from "lucide-react"
-import { usePortfolioStore } from "@/lib/store"
-import { CustomButton } from "@/components/ui/custom-button"
-import { CustomInput } from "@/components/ui/custom-input"
-import { Label } from "@/components/ui/label"
-import { useToast } from "@/components/ui/toast"
-import { usePageTitle } from "@/lib/hooks/use-page-title"
-import Image from "next/image"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { Upload, Mail } from "lucide-react";
+import { usePortfolioStore } from "@/lib/store";
+import { CustomButton } from "@/components/ui/custom-button";
+import { CustomInput } from "@/components/ui/custom-input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/toast";
+import { usePageTitle } from "@/lib/hooks/use-page-title";
+import { DashboardButton } from "@/components/ui/dashboard-button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
 
 export default function PersonalInfoPage() {
-  const { personalInfo, updatePersonalInfo, projects, techStack, achievements, socialLinks, loading } =
-    usePortfolioStore()
-  const { showToast } = useToast()
-  
+  const {
+    personalInfo,
+    updatePersonalInfo,
+    projects,
+    techStack,
+    achievements,
+    socialLinks,
+    loading,
+  } = usePortfolioStore();
+  const { showToast } = useToast();
+
   // Set dynamic page title
-  usePageTitle({ 
+  usePageTitle({
     title: "Personal Information",
-    prefix: "Dashboard"
-  })
+    prefix: "Dashboard",
+  });
   const [formData, setFormData] = useState({
     name: "",
     jobTitle: "",
@@ -30,8 +39,8 @@ export default function PersonalInfoPage() {
     phone: "",
     location: "",
     cvFile: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (personalInfo) {
@@ -39,40 +48,41 @@ export default function PersonalInfoPage() {
         name: personalInfo.name || "",
         jobTitle: personalInfo.jobTitle || "",
         bio: personalInfo.bio || "",
-        profileImage: personalInfo.profileImage || "/placeholder.svg?height=60&width=60",
+        profileImage:
+          personalInfo.profileImage || "/placeholder.svg?height=60&width=60",
         email: personalInfo.email || "",
         phone: personalInfo.phone || "",
         location: personalInfo.location || "",
         cvFile: personalInfo.cvFile || "",
-      })
+      });
     }
-  }, [personalInfo])
+  }, [personalInfo]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
     try {
-      await updatePersonalInfo(formData)
-      showToast("Personal information updated successfully!", "success")
+      await updatePersonalInfo(formData);
+      showToast("Personal information updated successfully!", "success");
     } catch (error) {
-      showToast("Failed to update personal information", "error")
+      showToast("Failed to update personal information", "error");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onload = (e) => {
-        const result = e.target?.result as string
-        setFormData((prev) => ({ ...prev, profileImage: result }))
-      }
-      reader.readAsDataURL(file)
+        const result = e.target?.result as string;
+        setFormData((prev) => ({ ...prev, profileImage: result }));
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   if (loading && !personalInfo) {
     return (
@@ -82,14 +92,20 @@ export default function PersonalInfoPage() {
           <p className="text-gray-400">Loading...</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="max-w-2xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-mono mb-2">Personal Information</h1>
-        <p className="text-gray-400">Update your personal details and contact information</p>
+    <div className="p-6 space-y-6 bg-black min-h-screen">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white font-mono tracking-wide">
+            Personal Information
+          </h1>
+          <p className="text-gray-400 mt-2 font-mono text-sm tracking-wide">
+            Update your personal details and contact information
+          </p>
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -107,13 +123,24 @@ export default function PersonalInfoPage() {
               className="rounded-full border border-white"
             />
             <div>
-              <CustomButton type="button" variant="outline" size="sm" asChild>
+              <DashboardButton
+                type="button"
+                variant="outline"
+                size="sm"
+                asChild
+              >
                 <label htmlFor="profileImage" className="cursor-pointer">
                   <Upload className="w-4 h-4 mr-2" />
                   Upload New Image
                 </label>
-              </CustomButton>
-              <input id="profileImage" type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+              </DashboardButton>
+              <input
+                id="profileImage"
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
             </div>
           </div>
         </div>
@@ -127,7 +154,9 @@ export default function PersonalInfoPage() {
             <CustomInput
               id="name"
               value={formData.name}
-              onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, name: e.target.value }))
+              }
               placeholder="Your full name"
             />
           </div>
@@ -139,7 +168,9 @@ export default function PersonalInfoPage() {
             <CustomInput
               id="jobTitle"
               value={formData.jobTitle}
-              onChange={(e) => setFormData((prev) => ({ ...prev, jobTitle: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, jobTitle: e.target.value }))
+              }
               placeholder="Your job title"
             />
           </div>
@@ -161,7 +192,9 @@ export default function PersonalInfoPage() {
                 id="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, email: e.target.value }))
+                }
                 placeholder="your@email.com"
               />
             </div>
@@ -174,7 +207,9 @@ export default function PersonalInfoPage() {
                 id="phone"
                 type="tel"
                 value={formData.phone}
-                onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, phone: e.target.value }))
+                }
                 placeholder="+1 (555) 123-4567"
               />
             </div>
@@ -187,7 +222,9 @@ export default function PersonalInfoPage() {
             <CustomInput
               id="location"
               value={formData.location}
-              onChange={(e) => setFormData((prev) => ({ ...prev, location: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, location: e.target.value }))
+              }
               placeholder="City, State/Country"
             />
           </div>
@@ -202,40 +239,84 @@ export default function PersonalInfoPage() {
             variant="textarea"
             id="bio"
             value={formData.bio}
-            onChange={(e) => setFormData((prev) => ({ ...prev, bio: e.target.value }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, bio: e.target.value }))
+            }
             placeholder="Tell us about yourself..."
             rows={4}
           />
         </div>
 
-        <CustomButton type="submit" disabled={isSubmitting}>
+        <DashboardButton type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Saving..." : "Save Changes"}
-        </CustomButton>
+        </DashboardButton>
       </form>
 
       {/* Portfolio Stats */}
-      <div className="mt-12 pt-8 border-t border-white/20">
-        <h2 className="text-2xl font-mono mb-6">Portfolio Overview</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-gray-900/50 border border-white/20 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-blue-400">{projects?.length || 0}</div>
-            <div className="text-sm text-gray-400">Projects</div>
-          </div>
-          <div className="bg-gray-900/50 border border-white/20 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-green-400">{techStack?.length || 0}</div>
-            <div className="text-sm text-gray-400">Technologies</div>
-          </div>
-          <div className="bg-gray-900/50 border border-white/20 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-yellow-400">{achievements?.length || 0}</div>
-            <div className="text-sm text-gray-400">Achievements</div>
-          </div>
-          <div className="bg-gray-900/50 border border-white/20 rounded-xl p-4 text-center">
-            <div className="text-2xl font-bold text-purple-400">{socialLinks?.length || 0}</div>
-            <div className="text-sm text-gray-400">Social Links</div>
-          </div>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="border-white/20 bg-black/50 hover:border-white/40 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-white font-mono tracking-wide">
+              Projects
+            </CardTitle>
+            <div className="h-4 w-4 text-blue-400">📁</div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-white font-mono">
+              {projects?.length || 0}
+            </div>
+            <p className="text-xs text-gray-400 font-mono">Total projects</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-white/20 bg-black/50 hover:border-white/40 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-white font-mono tracking-wide">
+              Technologies
+            </CardTitle>
+            <div className="h-4 w-4 text-green-400">⚡</div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-white font-mono">
+              {techStack?.length || 0}
+            </div>
+            <p className="text-xs text-gray-400 font-mono">Tech stack items</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-white/20 bg-black/50 hover:border-white/40 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-white font-mono tracking-wide">
+              Achievements
+            </CardTitle>
+            <div className="h-4 w-4 text-yellow-400">🏆</div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-white font-mono">
+              {achievements?.length || 0}
+            </div>
+            <p className="text-xs text-gray-400 font-mono">
+              Total achievements
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-white/20 bg-black/50 hover:border-white/40 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-white font-mono tracking-wide">
+              Social Links
+            </CardTitle>
+            <div className="h-4 w-4 text-purple-400">🔗</div>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-white font-mono">
+              {socialLinks?.length || 0}
+            </div>
+            <p className="text-xs text-gray-400 font-mono">Social profiles</p>
+          </CardContent>
+        </Card>
       </div>
     </div>
-  )
+  );
 }
 // H

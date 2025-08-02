@@ -19,9 +19,12 @@ import {
   Menu,
   X,
   Zap,
+  HardDrive,
 } from "lucide-react";
 import { CustomButton } from "@/components/ui/custom-button";
+import { DashboardButton } from "@/components/ui/dashboard-button";
 import { ProtectedRoute } from "@/components/protected-route";
+import { OnboardingModal } from "@/components/onboarding-modal";
 import { useAuth } from "@/lib/auth-context";
 import { usePortfolioStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
@@ -34,6 +37,7 @@ const navigation = [
   { name: "Social Links", href: "/dashboard/social-links", icon: Share2 },
   { name: "Contact Form", href: "/dashboard/contact", icon: Mail },
   { name: "CV Management", href: "/dashboard/cv", icon: FileText },
+  { name: "Storage", href: "/dashboard/storage", icon: HardDrive },
   { name: "Data Backup", href: "/dashboard/backup", icon: Database },
 ];
 
@@ -80,7 +84,7 @@ export default function DashboardLayout({
           {/* Sidebar */}
           <div
             className={cn(
-              "fixed inset-y-0 left-0 z-30 w-64 bg-gray-900 border-r border-white/10 transform transition-transform duration-300 ease-in-out lg:transform-none",
+              "fixed inset-y-0 left-0 z-30 w-64 bg-black border-r border-white/20 transform transition-transform duration-300 ease-in-out lg:transform-none",
               sidebarOpen
                 ? "translate-x-0"
                 : "-translate-x-full lg:translate-x-0"
@@ -88,7 +92,7 @@ export default function DashboardLayout({
           >
             <div className="flex flex-col h-full">
               {/* Brand Header */}
-              <div className="flex-shrink-0 p-6 border-b border-white/10">
+              <div className="flex-shrink-0 p-4 border-b border-white/20">
                 <div className="flex items-center gap-3 mb-4">
                   <Image
                     src="/icon.png"
@@ -105,30 +109,31 @@ export default function DashboardLayout({
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <CustomButton
-                      variant="outline"
-                      size="sm"
-                      asChild
-                      className="flex-1"
-                    >
-                      <Link href="/" target="_blank" rel="noopener noreferrer">
+                    <DashboardButton variant="outline" size="sm" asChild>
+                      <Link
+                        href="/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center"
+                      >
                         <Home className="w-4 h-4 mr-2" />
-                        View Portfolio
+                        Portfolio
                       </Link>
-                    </CustomButton>
-                    <CustomButton
+                    </DashboardButton>
+                    <DashboardButton
                       variant="outline"
                       size="sm"
                       onClick={handleSignOut}
-                      className="text-red-400 hover:text-red-300 hover:bg-red-400/10 border-red-400/20 flex-1"
+                      className="text-red-400 hover:text-red-300 hover:bg-red-400/10 border-red-400/20"
                       title="Sign Out"
                     >
                       <LogOut className="w-4 h-4" />
-                    </CustomButton>
+                    </DashboardButton>
                   </div>
                   <button
                     onClick={() => setSidebarOpen(false)}
-                    className="lg:hidden p-1 rounded-lg hover:bg-gray-800 transition-colors"
+                    className="lg:hidden p-1 rounded-lg hover:bg-white/10 transition-colors border border-white/20"
+                    title="Close sidebar"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -136,7 +141,7 @@ export default function DashboardLayout({
               </div>
 
               {/* Navigation */}
-              <nav className="flex-1 p-4 space-y-1">
+              <nav className="flex-1 p-3 space-y-1">
                 {navigation.map((item) => {
                   const isActive = pathname === item.href;
                   return (
@@ -147,15 +152,15 @@ export default function DashboardLayout({
                       className={cn(
                         "flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200",
                         isActive
-                          ? "bg-white text-black shadow-lg"
-                          : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                          ? "bg-white/10 text-white border border-white/20 shadow-lg"
+                          : "text-gray-300 hover:bg-white/5 hover:text-white hover:border-white/10"
                       )}
                     >
                       <item.icon
                         className={cn(
                           "w-5 h-5 flex-shrink-0",
                           isActive
-                            ? "text-black"
+                            ? "text-white"
                             : "text-gray-400 group-hover:text-white"
                         )}
                       />
@@ -166,15 +171,13 @@ export default function DashboardLayout({
               </nav>
 
               {/* User Info */}
-              <div className="flex-shrink-0 p-4 pb-6 border-t border-white/10">
+              <div className="flex-shrink-0 p-3 border-t border-white/20">
                 {user && (
-                  <div className="p-3 bg-gray-800/50 rounded-lg">
+                  <div className="p-2 bg-black/50 border border-white/20 rounded-lg">
                     <p className="text-xs text-gray-400 mb-1">Signed in as:</p>
-                    <p className="text-sm font-medium truncate mb-2">
-                      {user.email}
-                    </p>
+                    <p className="text-xs font-medium truncate">{user.email}</p>
                     {personalInfo?.name && (
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-400 mt-1">
                         {personalInfo.name}
                       </p>
                     )}
@@ -187,11 +190,12 @@ export default function DashboardLayout({
           {/* Main Content */}
           <div className="flex-1 min-w-0 lg:ml-64">
             {/* Mobile Header */}
-            <div className="lg:hidden sticky top-0 z-20 bg-black border-b border-white/10 backdrop-blur-md">
+            <div className="lg:hidden sticky top-0 z-20 bg-black border-b border-white/20 backdrop-blur-md">
               <div className="flex items-center justify-between p-4">
                 <button
                   onClick={() => setSidebarOpen(true)}
-                  className="p-2 rounded-lg hover:bg-gray-800 transition-colors"
+                  className="p-2 rounded-lg hover:bg-white/10 transition-colors border border-white/20"
+                  title="Open sidebar"
                 >
                   <Menu className="w-5 h-5" />
                 </button>
@@ -206,7 +210,7 @@ export default function DashboardLayout({
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleSignOut}
-                    className="p-2 rounded-lg hover:bg-gray-800 transition-colors text-red-400 hover:text-red-300"
+                    className="p-2 rounded-lg hover:bg-red-400/10 transition-colors text-red-400 hover:text-red-300 border border-red-400/20"
                     title="Sign Out"
                   >
                     <LogOut className="w-5 h-5" />
@@ -238,6 +242,9 @@ export default function DashboardLayout({
           </div>
         </div>
       </div>
+
+      {/* Onboarding Modal */}
+      <OnboardingModal />
     </ProtectedRoute>
   );
 }

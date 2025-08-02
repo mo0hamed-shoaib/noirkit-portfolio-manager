@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/toast";
+import { DashboardButton } from "@/components/ui/dashboard-button";
 
 export default function ContactFormPage() {
   const {
@@ -216,18 +217,22 @@ export default function ContactFormPage() {
   };
 
   return (
-    <div className="max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-mono mb-2">Contact Form Builder</h1>
-        <p className="text-gray-400">
-          Customize your contact form fields and settings
-        </p>
+    <div className="p-6 space-y-6 bg-black min-h-screen">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white font-mono tracking-wide">
+            Contact Form Builder
+          </h1>
+          <p className="text-gray-400 mt-2 font-mono text-sm tracking-wide">
+            Customize your contact form fields and settings
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Form Settings */}
         <div className="space-y-6">
-          <div className="border border-white/20 rounded-xl p-6 bg-gray-900/50">
+          <div className="border border-white/20 rounded-xl p-6 bg-black/50 hover:border-white/40 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <Settings className="w-5 h-5" />
               Form Settings
@@ -280,50 +285,50 @@ export default function ContactFormPage() {
               </div>
 
               <div className="flex gap-3 pt-4">
-                <CustomButton onClick={handleSaveForm}>
+                <DashboardButton onClick={handleSaveForm}>
                   <Save className="w-4 h-4 mr-2" />
                   Save Form Settings
-                </CustomButton>
-                <CustomButton
+                </DashboardButton>
+                <DashboardButton
                   variant="outline"
                   onClick={() => setIsPreviewOpen(true)}
                 >
                   <Eye className="w-4 h-4 mr-2" />
                   Preview Form
-                </CustomButton>
+                </DashboardButton>
               </div>
             </div>
           </div>
 
           {/* Form Fields */}
-          <div className="border border-white/20 rounded-xl p-6 bg-gray-900/50">
+          <div className="border border-white/20 rounded-xl p-6 bg-black/50 hover:border-white/40 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-semibold flex items-center gap-2">
                 <Mail className="w-5 h-5" />
                 Form Fields
               </h2>
-              <CustomButton size="sm" onClick={() => openFieldModal()}>
+              <DashboardButton size="sm" onClick={() => openFieldModal()}>
                 <Plus className="w-4 h-4 mr-1" />
                 Add Field
-              </CustomButton>
+              </DashboardButton>
             </div>
 
             <div className="space-y-3">
               {formData.fields.length === 0 ? (
-                <div className="text-center py-8 border border-white/10 rounded-lg bg-gray-900/30">
+                <div className="text-center py-8 border border-white/10 rounded-lg bg-black/30 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
                   <Mail className="w-8 h-8 text-gray-500 mx-auto mb-3" />
                   <p className="text-gray-500 text-sm mb-4">
                     No form fields yet
                   </p>
-                  <CustomButton size="sm" onClick={() => openFieldModal()}>
+                  <DashboardButton size="sm" onClick={() => openFieldModal()}>
                     Add Your First Field
-                  </CustomButton>
+                  </DashboardButton>
                 </div>
               ) : (
                 formData.fields.map((field, index) => (
                   <div
                     key={field.id}
-                    className="border border-white/10 rounded-lg p-4 bg-gray-900/30 hover:bg-gray-900/50 transition-colors duration-200 group"
+                    className="border border-white/10 rounded-lg p-4 bg-black/30 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm group"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -389,7 +394,7 @@ export default function ContactFormPage() {
 
         {/* Live Preview */}
         <div className="space-y-6">
-          <div className="border border-white/20 rounded-xl p-6 bg-gray-900/50">
+          <div className="border border-white/20 rounded-xl p-6 bg-black/50 hover:border-white/40 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
             <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
               <Eye className="w-5 h-5" />
               Live Preview
@@ -567,17 +572,17 @@ export default function ContactFormPage() {
             </div>
 
             <div className="flex gap-4">
-              <CustomButton type="submit">
+              <DashboardButton type="submit">
                 <Save className="w-4 h-4 mr-2" />
                 {editingField ? "Update Field" : "Add Field"}
-              </CustomButton>
-              <CustomButton
+              </DashboardButton>
+              <DashboardButton
                 type="button"
                 variant="outline"
                 onClick={closeFieldModal}
               >
                 Cancel
-              </CustomButton>
+              </DashboardButton>
             </div>
           </form>
         </DialogContent>
@@ -641,10 +646,10 @@ export default function ContactFormPage() {
             ))}
 
             {formData.fields.length > 0 && (
-              <CustomButton className="w-full mt-6">
+              <DashboardButton className="w-full mt-6">
                 <Mail className="w-4 h-4 mr-2" />
                 Send Message
-              </CustomButton>
+              </DashboardButton>
             )}
           </div>
         </DialogContent>

@@ -1,110 +1,131 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Plus, Edit, Trash2, Code, Save, X, Eye, EyeOff, GripVertical } from "lucide-react"
-import { usePortfolioStore } from "@/lib/store"
-import type { TechStack } from "@/lib/types"
-import { CustomButton } from "@/components/ui/custom-button"
-import { CustomInput } from "@/components/ui/custom-input"
-import { Label } from "@/components/ui/label"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { SortableList } from "@/components/ui/sortable-list"
-import { useToast } from "@/components/ui/toast"
-import { usePageTitle } from "@/lib/hooks/use-page-title"
+import { useState } from "react";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Code,
+  Save,
+  X,
+  Eye,
+  EyeOff,
+  GripVertical,
+} from "lucide-react";
+import { usePortfolioStore } from "@/lib/store";
+import type { TechStack } from "@/lib/types";
+import { CustomInput } from "@/components/ui/custom-input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { SortableList } from "@/components/ui/sortable-list";
+import { useToast } from "@/components/ui/toast";
+import { usePageTitle } from "@/lib/hooks/use-page-title";
+import { DashboardButton } from "@/components/ui/dashboard-button";
 
 export default function TechStackPage() {
-  const { techStack, addTechStack, updateTechStack, deleteTechStack, reorderTechStack } = usePortfolioStore()
-  const { showToast } = useToast()
-  
+  const {
+    techStack,
+    addTechStack,
+    updateTechStack,
+    deleteTechStack,
+    reorderTechStack,
+  } = usePortfolioStore();
+  const { showToast } = useToast();
+
   // Set dynamic page title
-  usePageTitle({ 
+  usePageTitle({
     title: "Tech Stack",
-    prefix: "Dashboard"
-  })
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [editingTech, setEditingTech] = useState<TechStack | null>(null)
-  const [showSvgPreview, setShowSvgPreview] = useState(false)
-  const [isReordering, setIsReordering] = useState(false)
+    prefix: "Dashboard",
+  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTech, setEditingTech] = useState<TechStack | null>(null);
+  const [showSvgPreview, setShowSvgPreview] = useState(false);
+  const [isReordering, setIsReordering] = useState(false);
   const [formData, setFormData] = useState<Omit<TechStack, "id">>({
     name: "",
     icon: "",
     order: techStack.length + 1,
-  })
+  });
 
   const resetForm = () => {
     setFormData({
       name: "",
       icon: "",
       order: techStack.length + 1,
-    })
-    setEditingTech(null)
-    setShowSvgPreview(false)
-  }
+    });
+    setEditingTech(null);
+    setShowSvgPreview(false);
+  };
 
   const openModal = (tech?: TechStack) => {
     if (tech) {
-      setEditingTech(tech)
-      setFormData(tech)
+      setEditingTech(tech);
+      setFormData(tech);
     } else {
-      resetForm()
+      resetForm();
     }
-    setIsModalOpen(true)
-  }
+    setIsModalOpen(true);
+  };
 
   const closeModal = () => {
-    setIsModalOpen(false)
-    resetForm()
-  }
+    setIsModalOpen(false);
+    resetForm();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!formData.name.trim() || !formData.icon.trim()) {
-      showToast("Please fill in all required fields", "error")
-      return
+      showToast("Please fill in all required fields", "error");
+      return;
     }
 
     try {
       if (editingTech) {
-        await updateTechStack(editingTech.id, formData)
-        showToast("Technology updated successfully!", "success")
+        await updateTechStack(editingTech.id, formData);
+        showToast("Technology updated successfully!", "success");
       } else {
-        await addTechStack(formData)
-        showToast("Technology added successfully!", "success")
+        await addTechStack(formData);
+        showToast("Technology added successfully!", "success");
       }
-      closeModal()
+      closeModal();
     } catch (error) {
-      showToast("Failed to save technology", "error")
+      showToast("Failed to save technology", "error");
     }
-  }
+  };
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this technology?")) {
       try {
-        await deleteTechStack(id)
-        showToast("Technology deleted successfully!", "success")
+        await deleteTechStack(id);
+        showToast("Technology deleted successfully!", "success");
       } catch (error) {
-        showToast("Failed to delete technology", "error")
+        showToast("Failed to delete technology", "error");
       }
     }
-  }
+  };
 
   const handleReorder = async (reorderedTechStack: TechStack[]) => {
     try {
-      await reorderTechStack(reorderedTechStack)
-      showToast("Technologies reordered successfully!", "success")
+      await reorderTechStack(reorderedTechStack);
+      showToast("Technologies reordered successfully!", "success");
     } catch (error) {
-      showToast("Failed to reorder technologies", "error")
+      showToast("Failed to reorder technologies", "error");
     }
-  }
+  };
 
   const renderIcon = (iconPath: string, className = "w-8 h-8") => {
-    if (!iconPath) return null
-  
+    if (!iconPath) return null;
+
     // Check if it looks like a full SVG
-    const isFullSvg = iconPath.trim().startsWith("<svg")
-  
+    const isFullSvg = iconPath.trim().startsWith("<svg");
+
     try {
       if (isFullSvg) {
         return (
@@ -113,9 +134,9 @@ export default function TechStackPage() {
             style={{ filter: "drop-shadow(0 0 1px rgba(255,255,255,0.3))" }}
             dangerouslySetInnerHTML={{ __html: iconPath }}
           />
-        )
+        );
       }
-  
+
       // Else assume it's a valid path
       return (
         <svg
@@ -126,18 +147,23 @@ export default function TechStackPage() {
         >
           <path d={iconPath} />
         </svg>
-      )
+      );
     } catch {
       return (
-        <div className={`${className} bg-red-500/20 border border-red-500 rounded flex items-center justify-center`}>
+        <div
+          className={`${className} bg-red-500/20 border border-red-500 rounded flex items-center justify-center`}
+        >
           <X className="w-4 h-4 text-red-500" />
         </div>
-      )
+      );
     }
-  }
-  
+  };
 
-  const renderTechStackItem = (tech: TechStack, index: number, isDragging: boolean) => (
+  const renderTechStackItem = (
+    tech: TechStack,
+    index: number,
+    isDragging: boolean
+  ) => (
     <div
       className={`border border-white/20 rounded-xl p-4 bg-gray-900/50 hover:bg-gray-900/70 transition-all duration-200 group ${
         isDragging ? "opacity-75 scale-105" : ""
@@ -157,17 +183,25 @@ export default function TechStackPage() {
         </div>
         {!isReordering && (
           <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            <CustomButton variant="ghost" size="sm" onClick={() => openModal(tech)}>
+            <DashboardButton
+              variant="ghost"
+              size="sm"
+              onClick={() => openModal(tech)}
+            >
               <Edit className="w-3 h-3" />
-            </CustomButton>
-            <CustomButton variant="ghost" size="sm" onClick={() => handleDelete(tech.id)}>
+            </DashboardButton>
+            <DashboardButton
+              variant="ghost"
+              size="sm"
+              onClick={() => handleDelete(tech.id)}
+            >
               <Trash2 className="w-3 h-3" />
-            </CustomButton>
+            </DashboardButton>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 
   // Popular tech stack icons for quick selection
   const popularTechIcons = [
@@ -195,25 +229,32 @@ export default function TechStackPage() {
       name: "Next.js",
       icon: "M11.572 0c-.176 0-.31.001-.358.007a19.76 19.76 0 0 1-.364.033C7.443.346 4.25 2.185 2.228 5.012a11.875 11.875 0 0 0-2.119 5.243c-.096.659-.108.854-.108 1.747s.012 1.089.108 1.748c.652 4.506 3.86 8.292 8.209 9.695.779.25 1.6.422 2.534.525.363.04 1.935.04 2.299 0 1.611-.178 2.977-.577 4.323-1.264.207-.106.247-.134.219-.158-.02-.013-.9-1.193-1.955-2.62l-1.919-2.592-2.404-3.558a338.739 338.739 0 0 0-2.422-3.556c-.009-.002-.018 1.579-.023 3.51-.007 3.38-.01 3.515-.052 3.595a.426.426 0 0 1-.206.214c-.075.037-.14.044-.495.044H7.81l-.108-.068a.438.438 0 0 1-.157-.171l-.05-.106.006-4.703.007-4.705.072-.092a.645.645 0 0 1 .174-.143c.096-.047.134-.051.54-.051.478 0 .558.018.682.154.035.038 1.337 1.999 2.895 4.361a10760.433 10760.433 0 0 0 4.735 7.17l1.9 2.879.096-.063a12.317 12.317 0 0 0 2.466-2.163 11.944 11.944 0 0 0 2.824-6.134c.096-.66.108-.854.108-1.748 0-.893-.012-1.088-.108-1.747C19.777 4.249 16.569.463 12.22-.938a11.351 11.351 0 0 0-2.647-.526c-.244-.018-1.943-.006-2.001.007zM16.503 7.036c.157-.007.72-.003.814.008.033.004.66.34 2.548 1.36 1.48.8 2.695 1.458 2.701 1.462.009.008-2.321 3.496-2.339 3.496-.007 0-1.03-.553-2.274-1.229l-2.263-1.229-.54-.297-.55-.302-.001-.533V7.036h.004z",
     },
-  ]
+  ];
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-6 space-y-6 bg-black min-h-screen">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-mono mb-2">Tech Stack</h1>
-          <p className="text-gray-400">Manage your technology stack and skills</p>
+          <h1 className="text-3xl font-bold text-white font-mono tracking-wide">
+            Tech Stack
+          </h1>
+          <p className="text-gray-400 mt-2 font-mono text-sm tracking-wide">
+            Manage your technology stack and skills
+          </p>
         </div>
         <div className="flex gap-4">
           {techStack.length > 0 && (
-            <CustomButton variant={isReordering ? "default" : "outline"} onClick={() => setIsReordering(!isReordering)}>
+            <DashboardButton
+              variant={isReordering ? "default" : "outline"}
+              onClick={() => setIsReordering(!isReordering)}
+            >
               {isReordering ? "Done" : "Reorder"}
-            </CustomButton>
+            </DashboardButton>
           )}
-          <CustomButton onClick={() => openModal()}>
+          <DashboardButton onClick={() => openModal()}>
             <Plus className="w-4 h-4 mr-2" />
             Add Technology
-          </CustomButton>
+          </DashboardButton>
         </div>
       </div>
 
@@ -231,20 +272,30 @@ export default function TechStackPage() {
           {techStack.map((tech) => (
             <div
               key={tech.id}
-              className="border border-white/20 rounded-xl p-4 bg-gray-900/50 hover:bg-gray-900/70 transition-all duration-200 group"
+              className="border border-white/20 rounded-xl p-4 bg-black/50 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm group"
             >
               <div className="flex flex-col items-center space-y-3">
                 <div className="w-12 h-12 text-white group-hover:scale-110 transition-transform duration-200">
                   {renderIcon(tech.icon, "w-full h-full")}
                 </div>
-                <h3 className="text-sm font-medium text-center truncate w-full">{tech.name}</h3>
+                <h3 className="text-sm font-medium text-center truncate w-full">
+                  {tech.name}
+                </h3>
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                  <CustomButton variant="ghost" size="sm" onClick={() => openModal(tech)}>
+                  <DashboardButton
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => openModal(tech)}
+                  >
                     <Edit className="w-3 h-3" />
-                  </CustomButton>
-                  <CustomButton variant="ghost" size="sm" onClick={() => handleDelete(tech.id)}>
+                  </DashboardButton>
+                  <DashboardButton
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDelete(tech.id)}
+                  >
                     <Trash2 className="w-3 h-3" />
-                  </CustomButton>
+                  </DashboardButton>
                 </div>
               </div>
             </div>
@@ -252,10 +303,12 @@ export default function TechStackPage() {
 
           {/* Empty State */}
           {techStack.length === 0 && (
-            <div className="col-span-full border border-white/20 rounded-xl p-12 text-center bg-gray-900/30">
+            <div className="col-span-full border border-white/20 rounded-xl p-12 text-center bg-black/30 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
               <Code className="w-12 h-12 text-gray-500 mx-auto mb-4" />
               <p className="text-gray-500 mb-4">No technologies added yet</p>
-              <CustomButton onClick={() => openModal()}>Add Your First Technology</CustomButton>
+              <DashboardButton onClick={() => openModal()}>
+                Add Your First Technology
+              </DashboardButton>
             </div>
           )}
         </div>
@@ -265,7 +318,9 @@ export default function TechStackPage() {
       <Dialog open={isModalOpen} onOpenChange={closeModal}>
         <DialogContent className="max-w-2xl bg-black border border-white text-white max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editingTech ? "Edit Technology" : "Add New Technology"}</DialogTitle>
+            <DialogTitle>
+              {editingTech ? "Edit Technology" : "Add New Technology"}
+            </DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -274,7 +329,9 @@ export default function TechStackPage() {
               <CustomInput
                 id="name"
                 value={formData.name}
-                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
                 placeholder="e.g., React, TypeScript, Node.js"
                 required
               />
@@ -283,73 +340,59 @@ export default function TechStackPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <Label htmlFor="icon">SVG Icon Path *</Label>
-                <CustomButton
+                <DashboardButton
                   type="button"
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowSvgPreview(!showSvgPreview)}
                 >
-                  {showSvgPreview ? <EyeOff className="w-4 h-4 mr-1" /> : <Eye className="w-4 h-4 mr-1" />}
+                  {showSvgPreview ? (
+                    <EyeOff className="w-4 h-4 mr-1" />
+                  ) : (
+                    <Eye className="w-4 h-4 mr-1" />
+                  )}
                   {showSvgPreview ? "Hide" : "Show"} Preview
-                </CustomButton>
+                </DashboardButton>
               </div>
 
               <CustomInput
                 variant="textarea"
                 id="icon"
                 value={formData.icon}
-                onChange={(e) => setFormData((prev) => ({ ...prev, icon: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, icon: e.target.value }))
+                }
                 placeholder="Paste the SVG path data here (the 'd' attribute content)"
                 rows={4}
                 required
               />
 
               {showSvgPreview && formData.icon && (
-                <div className="border border-white/20 rounded-lg p-4 bg-gray-900/50">
+                <div className="border border-white/20 rounded-lg p-4 bg-black/50 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
                   <p className="text-sm text-gray-400 mb-2">Preview:</p>
-                  <div className="flex items-center justify-center">{renderIcon(formData.icon, "w-16 h-16")}</div>
+                  <div className="flex items-center justify-center">
+                    {renderIcon(formData.icon, "w-16 h-16")}
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Popular Icons Quick Select */}
-            <div className="space-y-4">
-              <Label>Quick Select Popular Technologies</Label>
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                {popularTechIcons.map((tech) => (
-                  <CustomButton
-                    key={tech.name}
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="flex flex-col items-center gap-2 h-auto py-3"
-                    onClick={() =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        name: tech.name,
-                        icon: tech.icon,
-                      }))
-                    }
-                  >
-                    {renderIcon(tech.icon, "w-6 h-6")}
-                    <span className="text-xs">{tech.name}</span>
-                  </CustomButton>
-                ))}
-              </div>
-            </div>
-
             <div className="flex gap-4">
-              <CustomButton type="submit">
+              <DashboardButton type="submit">
                 <Save className="w-4 h-4 mr-2" />
                 {editingTech ? "Update Technology" : "Add Technology"}
-              </CustomButton>
-              <CustomButton type="button" variant="outline" onClick={closeModal}>
+              </DashboardButton>
+              <DashboardButton
+                type="button"
+                variant="outline"
+                onClick={closeModal}
+              >
                 Cancel
-              </CustomButton>
+              </DashboardButton>
             </div>
           </form>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
