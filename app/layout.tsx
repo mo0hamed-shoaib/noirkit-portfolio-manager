@@ -66,7 +66,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://your-domain.com",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://your-domain.com",
     siteName: "NoirKit Portfolio",
     title: "NoirKit Portfolio - Professional Developer Portfolio",
     description:
