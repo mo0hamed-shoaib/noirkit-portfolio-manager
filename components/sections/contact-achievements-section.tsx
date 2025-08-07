@@ -90,9 +90,9 @@ export function ContactAchievementsSection({
     })[0];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Contact Section */}
-      <section className="border border-white/20 rounded-xl p-4 sm:p-6 bg-gradient-to-br from-gray-900/30 to-black/30 backdrop-blur-sm group hover:border-white/30 transition-all duration-300 relative overflow-hidden min-h-[400px] flex flex-col">
+      <section className="border border-white/20 rounded-xl p-4 sm:p-6 bg-gradient-to-br from-gray-900/30 to-black/30 backdrop-blur-sm group hover:border-white/30 transition-all duration-300 relative overflow-hidden flex flex-col">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
 
         <div className="flex items-start justify-between mb-4 sm:mb-6">
@@ -204,7 +204,7 @@ export function ContactAchievementsSection({
       </section>
 
       {/* Achievements/Education Section */}
-      <section className="border border-white/20 rounded-xl p-4 sm:p-6 bg-gradient-to-br from-gray-900/30 to-black/30 backdrop-blur-sm relative overflow-hidden min-h-[400px] flex flex-col group hover:border-white/30 transition-all duration-300">
+      <section className="border border-white/20 rounded-xl p-4 sm:p-6 bg-gradient-to-br from-gray-900/30 to-black/30 backdrop-blur-sm relative overflow-hidden flex flex-col group hover:border-white/30 transition-all duration-300">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
 
         <div className="flex items-center justify-between mb-4 sm:mb-6">
@@ -267,58 +267,60 @@ export function ContactAchievementsSection({
               </div>
             </div>
 
-            {/* Achievements List - Dynamic Height Container with Smooth Transitions */}
+            {/* Achievements List - Flexible Height Container with Smooth Transitions */}
             <div className="flex-1 min-h-0 relative">
-              <div
-                className={`transition-all duration-300 ease-in-out ${
-                  isTransitioning
-                    ? "opacity-0 translate-y-2"
-                    : "opacity-100 translate-y-0"
-                }`}
-              >
-                <div className="space-y-3">
-                  {visibleAchievements.map((achievement, index) => (
-                    <div
-                      key={`${achievement.id}-${currentAchievementIndex}`}
-                      className="flex items-start gap-3 p-4 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-all duration-200 group/item"
-                    >
-                      <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover/item:bg-white/20 transition-colors">
-                        {achievement.type === "education" ? (
-                          <GraduationCap className="w-5 h-5 text-blue-400" />
-                        ) : (
-                          <Award className="w-5 h-5 text-yellow-400" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2 mb-2">
-                          <h4 className="font-medium text-sm text-white line-clamp-1">
-                            {achievement.title}
-                          </h4>
+              <div className="min-h-[200px] max-h-[300px] sm:max-h-[350px] lg:max-h-[400px] overflow-hidden">
+                <div
+                  className={`transition-all duration-300 ease-in-out ${
+                    isTransitioning
+                      ? "opacity-0 translate-y-2"
+                      : "opacity-100 translate-y-0"
+                  }`}
+                >
+                  <div className="space-y-3">
+                    {visibleAchievements.map((achievement, index) => (
+                      <div
+                        key={`${achievement.id}-${currentAchievementIndex}`}
+                        className="flex items-start gap-3 p-4 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-all duration-200 group/item"
+                      >
+                        <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover/item:bg-white/20 transition-colors">
+                          {achievement.type === "education" ? (
+                            <GraduationCap className="w-5 h-5 text-blue-400" />
+                          ) : (
+                            <Award className="w-5 h-5 text-yellow-400" />
+                          )}
                         </div>
-                        <p className="text-xs text-gray-400 leading-relaxed mb-3">
-                          {achievement.description.length > 140
-                            ? `${achievement.description.substring(0, 140)}...`
-                            : achievement.description}
-                        </p>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-xs text-gray-500 bg-white/5 px-2 py-1 rounded border border-white/10">
-                            {achievement.date}
-                          </span>
-                          <span
-                            className={`text-xs px-2 py-1 rounded border ${
-                              achievement.type === "education"
-                                ? "bg-blue-400/10 text-blue-400 border-blue-400/20"
-                                : "bg-yellow-400/10 text-yellow-400 border-yellow-400/20"
-                            }`}
-                          >
-                            {achievement.type === "education"
-                              ? "Education"
-                              : "Achievement"}
-                          </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <h4 className="font-medium text-sm text-white line-clamp-1">
+                              {achievement.title}
+                            </h4>
+                          </div>
+                          <p className="text-xs text-gray-400 leading-relaxed mb-3">
+                            {achievement.description.length > 140
+                              ? `${achievement.description.substring(0, 140)}...`
+                              : achievement.description}
+                          </p>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-xs text-gray-500 bg-white/5 px-2 py-1 rounded border border-white/10">
+                              {achievement.date}
+                            </span>
+                            <span
+                              className={`text-xs px-2 py-1 rounded border ${
+                                achievement.type === "education"
+                                  ? "bg-blue-400/10 text-blue-400 border-blue-400/20"
+                                  : "bg-yellow-400/10 text-yellow-400 border-yellow-400/20"
+                              }`}
+                            >
+                              {achievement.type === "education"
+                                ? "Education"
+                                : "Achievement"}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

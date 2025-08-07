@@ -4,7 +4,7 @@ import { useState, Suspense, useEffect } from "react";
 import { Menu } from "lucide-react";
 import { usePortfolioStore } from "@/lib/store";
 import { CustomButton } from "@/components/ui/custom-button";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { DashboardButton } from "@/components/ui/dashboard-button";
 import { CVModal } from "@/components/cv-modal";
 import { ContactModal } from "@/components/contact-modal";
 import { ProfileSection } from "@/components/sections/profile-section";
@@ -118,14 +118,14 @@ export default function Portfolio() {
             This portfolio hasn't been configured yet. Sign in to the dashboard
             to set up your portfolio.
           </p>
-          <CustomButton
+          <DashboardButton
             asChild
             className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
           >
             <a href="/auth/login" aria-label="Navigate to dashboard login page">
               Go to Dashboard
             </a>
-          </CustomButton>
+          </DashboardButton>
         </div>
       </div>
     );

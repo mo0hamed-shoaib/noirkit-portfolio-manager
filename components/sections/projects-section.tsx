@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { ChevronLeft, ChevronRight, Search, Filter, X } from "lucide-react";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Project, TechStack } from "@/lib/types";
 import { ProjectCard } from "@/components/project-card";
 import { CustomButton } from "@/components/ui/custom-button";
-import { CustomInput } from "@/components/ui/custom-input";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 interface ProjectsSectionProps {
   projects: Project[];
@@ -16,40 +14,10 @@ interface ProjectsSectionProps {
 export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTechFilter, setSelectedTechFilter] = useState<string>("");
-  const [showFilters, setShowFilters] = useState(false);
 
   const projectsPerPage = 3;
 
-  // Get unique technologies from all projects
-  const allTechnologies = useMemo(() => {
-    const techSet = new Set<string>();
-    projects.forEach((project) => {
-      project.techStack.forEach((tech) => techSet.add(tech.toLowerCase()));
-    });
-    return Array.from(techSet).sort();
-  }, [projects]);
-
-  // Filter projects based on search and tech filter
-  const filteredProjects = useMemo(() => {
-    return projects.filter((project) => {
-      const matchesSearch =
-        searchTerm === "" ||
-        project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        project.description.toLowerCase().includes(searchTerm.toLowerCase());
-
-      const matchesTech =
-        selectedTechFilter === "" ||
-        project.techStack.some(
-          (tech) => tech.toLowerCase() === selectedTechFilter.toLowerCase()
-        );
-
-      return matchesSearch && matchesTech;
-    });
-  }, [projects, searchTerm, selectedTechFilter]);
-
-  const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
+  const totalPages = Math.ceil(projects.length / projectsPerPage);
 
   const goToPrevious = () => {
     if (isTransitioning) return;
@@ -91,23 +59,6 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
     }, 500);
   };
 
-  // Reset to first page when filters change
-  const handleFilterChange = (newFilter: string) => {
-    setSelectedTechFilter(newFilter);
-    setCurrentIndex(0);
-  };
-
-  const handleSearchChange = (newSearch: string) => {
-    setSearchTerm(newSearch);
-    setCurrentIndex(0);
-  };
-
-  const clearFilters = () => {
-    setSearchTerm("");
-    setSelectedTechFilter("");
-    setCurrentIndex(0);
-  };
-
   if (projects.length === 0) {
     return (
       <section>
@@ -124,38 +75,30 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
     );
   }
 
-  // Create all pages of filtered projects for sliding effect
+  // Create all pages of projects for sliding effect
   const projectPages = [];
   for (let i = 0; i < totalPages; i++) {
-    const pageProjects = filteredProjects.slice(
+    const pageProjects = projects.slice(
       i * projectsPerPage,
       (i + 1) * projectsPerPage
     );
     projectPages.push(pageProjects);
   }
 
-  const hasActiveFilters = searchTerm !== "" || selectedTechFilter !== "";
-
   return (
     <section>
       <div className="mb-6 space-y-4">
-        <div>
-          <h2 className="text-2xl font-mono font-bold">My Projects</h2>
-          <p className="text-gray-400 text-sm mt-1">
-            Showcasing my latest work
-            {hasActiveFilters && (
-              <span className="text-white/60 ml-2">
-                ({filteredProjects.length} of {projects.length})
-              </span>
-            )}
-          </p>
-        </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-mono font-bold">My Projects</h2>
+            <p className="text-gray-400 text-sm mt-1">
+              Showcasing my latest work
+            </p>
+          </div>
 
-        {/* Navigation Controls - All in one line */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-between gap-2">
+          {/* Navigation Controls - Moved to opposite side of "My Projects" */}
+          {totalPages > 1 && (
             <div className="flex items-center gap-2">
-              <ThemeToggle />
               <CustomButton
                 variant="outline"
                 size="sm"
@@ -184,106 +127,8 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
                 <ChevronRight className="w-4 h-4 ml-1" />
               </CustomButton>
             </div>
-
-            {/* Filter Toggle Button */}
-            <CustomButton
-              variant="outline"
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
-            >
-              <Filter className="w-4 h-4 mr-1" />
-              Filters
-            </CustomButton>
-          </div>
-        )}
-
-        {/* Navigation Controls - When no pagination needed */}
-        {totalPages <= 1 && (
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <ThemeToggle />
-            </div>
-
-            {/* Filter Toggle Button */}
-            <CustomButton
-              variant="outline"
-              size="sm"
-              onClick={() => setShowFilters(!showFilters)}
-              className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
-            >
-              <Filter className="w-4 h-4 mr-1" />
-              Filters
-            </CustomButton>
-          </div>
-        )}
-
-        {/* Search and Filter Controls */}
-        {showFilters && (
-          <div className="space-y-4 p-4 bg-black/50 border border-white/20 rounded-lg hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
-            <div className="flex flex-col sm:flex-row gap-3">
-              {/* Search Input */}
-              <div className="flex-1">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <CustomInput
-                    type="text"
-                    placeholder="Search projects..."
-                    value={searchTerm}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-              </div>
-
-              {/* Technology Filter */}
-              <div className="sm:w-48">
-                <select
-                  value={selectedTechFilter}
-                  onChange={(e) => handleFilterChange(e.target.value)}
-                  className="w-full px-3 py-2 bg-black/50 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-white/60 transition-colors font-mono tracking-wide"
-                  aria-label="Filter by technology"
-                >
-                  <option value="">All Technologies</option>
-                  {allTechnologies.map((tech) => (
-                    <option key={tech} value={tech}>
-                      {tech.charAt(0).toUpperCase() + tech.slice(1)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Clear Filters */}
-              {hasActiveFilters && (
-                <CustomButton
-                  variant="outline"
-                  size="sm"
-                  onClick={clearFilters}
-                  className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
-                >
-                  <X className="w-4 h-4 mr-1" />
-                  Clear
-                </CustomButton>
-              )}
-            </div>
-
-            {/* Active Filters Display */}
-            {hasActiveFilters && (
-              <div className="flex flex-wrap gap-2">
-                {searchTerm && (
-                  <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-white font-mono tracking-wide">
-                    Search: "{searchTerm}"
-                  </span>
-                )}
-                {selectedTechFilter && (
-                  <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-white font-mono tracking-wide">
-                    Tech: {selectedTechFilter}
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <div className="relative">
@@ -348,23 +193,6 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
         {isTransitioning && (
           <div className="absolute top-4 right-4 z-10">
             <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-          </div>
-        )}
-
-        {/* No results message */}
-        {filteredProjects.length === 0 && hasActiveFilters && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 mb-4">
-              No projects match your current filters.
-            </p>
-            <CustomButton
-              variant="outline"
-              size="sm"
-              onClick={clearFilters}
-              className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
-            >
-              Clear Filters
-            </CustomButton>
           </div>
         )}
       </div>
