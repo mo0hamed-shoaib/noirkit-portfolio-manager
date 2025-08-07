@@ -159,13 +159,13 @@ export default function Portfolio() {
             >
               <ProfileSection
                 personalInfo={personalInfo}
-                onViewCV={() => setIsCVModalOpen(true)}
               />
 
-              {/* Subtle divider */}
-              <div className="border-t border-border" aria-hidden="true"></div>
-
-              <SocialSection socialLinks={socialLinks} />
+              <SocialSection 
+                socialLinks={socialLinks} 
+                onViewCV={() => setIsCVModalOpen(true)}
+                onContactClick={() => setIsContactModalOpen(true)}
+              />
             </aside>
 
             {/* Right Content */}
@@ -182,9 +182,6 @@ export default function Portfolio() {
               <div className="border-t border-border" aria-hidden="true"></div>
 
               <TechStackSection techStack={techStack} />
-
-              {/* Subtle divider */}
-              <div className="border-t border-border" aria-hidden="true"></div>
 
               <ContactAchievementsSection
                 achievements={achievements}

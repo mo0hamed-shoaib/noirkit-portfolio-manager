@@ -14,7 +14,8 @@ interface CustomButtonProps
     | "ghost"
     | "destructive"
     | "secondary"
-    | "link";
+    | "link"
+    | "icon";
   size?: "default" | "sm" | "lg" | "icon";
   asChild?: boolean;
   loading?: boolean;
@@ -37,8 +38,8 @@ const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
         className={cn(
           // Base styles with more rounded corners and touch-friendly sizing
           "transition-all duration-200 font-medium rounded-full",
-          // Ensure minimum touch target size (44px) for mobile
-          "min-h-[44px] min-w-[44px]",
+          // Ensure minimum touch target size (44px) for mobile (except for icon variant)
+          variant !== "icon" && "min-h-[44px] min-w-[44px]",
           // Default variant - black bg, white text, white border
           variant === "default" &&
             "bg-black text-white border border-white hover:bg-white hover:text-black dark:bg-white dark:text-black dark:border-black dark:hover:bg-black dark:hover:text-white",
@@ -57,6 +58,9 @@ const CustomButton = forwardRef<HTMLButtonElement, CustomButtonProps>(
           // Link variant
           variant === "link" &&
             "bg-transparent text-foreground underline-offset-4 hover:underline border-0",
+          // Icon variant - compact icon-only button
+          variant === "icon" &&
+            "bg-transparent text-foreground border border-border hover:bg-foreground hover:text-background p-0",
           // Size variants with touch-friendly dimensions
           size === "sm" && "h-10 px-4 text-sm",
           size === "lg" && "h-12 px-6 text-lg",

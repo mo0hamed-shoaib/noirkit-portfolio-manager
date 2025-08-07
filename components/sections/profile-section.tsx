@@ -1,47 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import { Share2 } from "lucide-react";
 import type { PersonalInfo } from "@/lib/types";
-import { CustomButton } from "@/components/ui/custom-button";
 
 interface ProfileSectionProps {
   personalInfo: PersonalInfo;
-  onViewCV: () => void;
 }
 
 export function ProfileSection({
   personalInfo,
-  onViewCV,
 }: ProfileSectionProps) {
-  const [copied, setCopied] = useState(false);
-
-  const handleSharePortfolio = async () => {
-    const portfolioUrl = window.location.href;
-    const portfolioTitle = "Check out my portfolio";
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: portfolioTitle,
-          url: portfolioUrl,
-        });
-      } catch (error) {
-        console.log("Error sharing:", error);
-      }
-    } else {
-      // Fallback: copy to clipboard
-      try {
-        await navigator.clipboard.writeText(portfolioUrl);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch (error) {
-        console.log("Error copying to clipboard:", error);
-      }
-    }
-  };
-
   return (
     <div className="space-y-6">
       {/* Profile Header */}
@@ -72,24 +40,10 @@ export function ProfileSection({
         <p className="text-gray-300 text-lg leading-relaxed font-light transition-all duration-200 hover:text-white/90">
           {personalInfo.bio}
         </p>
-        <div className="flex gap-3">
-          <CustomButton
-            variant="outline"
-            onClick={handleSharePortfolio}
-            className="flex-1 sm:flex-none transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
-          >
-            <Share2 className="w-4 h-4 mr-2" />
-            Share Portfolio
-          </CustomButton>
-          <CustomButton
-            variant="outline"
-            onClick={onViewCV}
-            className="flex-1 sm:flex-none transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
-          >
-            View CV
-          </CustomButton>
-        </div>
       </div>
+
+      {/* Divider */}
+      <div className="border-t border-border" aria-hidden="true"></div>
     </div>
   );
 }
