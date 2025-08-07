@@ -12,6 +12,7 @@ import { SocialSection } from "@/components/sections/social-section";
 import { ProjectsSection } from "@/components/sections/projects-section";
 import { TechStackSection } from "@/components/sections/tech-stack-section";
 import { ContactAchievementsSection } from "@/components/sections/contact-achievements-section";
+import { Footer } from "@/components/footer";
 import {
   ProfileSkeleton,
   ProjectCardSkeleton,
@@ -25,48 +26,51 @@ import { trackPageView } from "@/lib/analytics";
 function LoadingFallback() {
   return (
     <div
-      className="min-h-screen bg-background text-foreground p-6"
+      className="min-h-screen bg-background text-foreground flex flex-col"
       role="main"
       aria-label="Loading portfolio content"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-8">
-        {/* Left Sidebar Skeletons */}
-        <aside
-          className="space-y-8"
-          role="complementary"
-          aria-label="Loading personal information"
-        >
-          <ProfileSkeleton />
-          <SocialLinksSkeleton />
-        </aside>
+      <div className="flex-1 p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-8">
+          {/* Left Sidebar Skeletons */}
+          <aside
+            className="space-y-8"
+            role="complementary"
+            aria-label="Loading personal information"
+          >
+            <ProfileSkeleton />
+            <SocialLinksSkeleton />
+          </aside>
 
-        {/* Right Content Skeletons */}
-        <main className="space-y-8" role="main">
-          {/* Mobile Menu Button Skeleton */}
-          <div className="flex justify-end lg:hidden">
-            <div className="w-10 h-10 bg-gray-900/30 rounded-full animate-pulse" />
-          </div>
-
-          {/* Projects Section Skeleton */}
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <div className="h-8 w-32 bg-gray-900/30 rounded animate-pulse" />
-              <div className="h-4 w-48 bg-gray-900/30 rounded animate-pulse" />
+          {/* Right Content Skeletons */}
+          <main className="space-y-8" role="main">
+            {/* Mobile Menu Button Skeleton */}
+            <div className="flex justify-end lg:hidden">
+              <div className="w-10 h-10 bg-gray-900/30 rounded-full animate-pulse" />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {[...Array(3)].map((_, i) => (
-                <ProjectCardSkeleton key={i} />
-              ))}
+
+            {/* Projects Section Skeleton */}
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <div className="h-8 w-32 bg-gray-900/30 rounded animate-pulse" />
+                <div className="h-4 w-48 bg-gray-900/30 rounded animate-pulse" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[...Array(3)].map((_, i) => (
+                  <ProjectCardSkeleton key={i} />
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Tech Stack Section Skeleton */}
-          <TechStackSkeleton />
+            {/* Tech Stack Section Skeleton */}
+            <TechStackSkeleton />
 
-          {/* Achievements Section Skeleton */}
-          <AchievementsSkeleton />
-        </main>
+            {/* Achievements Section Skeleton */}
+            <AchievementsSkeleton />
+          </main>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 }
@@ -109,25 +113,28 @@ export default function Portfolio() {
   if (!personalInfo) {
     return (
       <div
-        className="min-h-screen bg-background text-foreground flex items-center justify-center p-6"
+        className="min-h-screen bg-background text-foreground flex flex-col"
         role="main"
       >
-        <div className="text-center max-w-md space-y-6">
-          <h1 className="text-3xl font-mono mb-4">Portfolio Not Set Up</h1>
-          <p className="text-muted-foreground mb-6 leading-relaxed">
-            This portfolio hasn't been configured yet. Sign in to the dashboard
-            to set up your portfolio.
-          </p>
-          <CustomButton
-            variant="outline"
-            asChild
-            className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
-          >
-            <a href="/auth/login" aria-label="Navigate to dashboard login page">
-              Go to Dashboard
-            </a>
-          </CustomButton>
+        <div className="flex-1 flex items-center justify-center p-6">
+          <div className="text-center max-w-md space-y-6">
+            <h1 className="text-3xl font-mono mb-4">Portfolio Not Set Up</h1>
+            <p className="text-muted-foreground mb-6 leading-relaxed">
+              This portfolio hasn't been configured yet. Sign in to the dashboard
+              to set up your portfolio.
+            </p>
+            <CustomButton
+              variant="outline"
+              asChild
+              className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
+            >
+              <a href="/auth/login" aria-label="Navigate to dashboard login page">
+                Go to Dashboard
+              </a>
+            </CustomButton>
+          </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -135,11 +142,11 @@ export default function Portfolio() {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <div
-        className="min-h-screen bg-background text-foreground"
+        className="min-h-screen bg-background text-foreground flex flex-col"
         role="main"
         aria-label={`${personalInfo.name}'s portfolio`}
       >
-        <div className="p-6 lg:p-8">
+        <div className="flex-1 p-6 lg:p-8">
           {/* Header - Theme toggle moved to projects section */}
           <div className="mb-6">{/* Empty div to maintain spacing */}</div>
 
@@ -186,6 +193,9 @@ export default function Portfolio() {
             </main>
           </div>
         </div>
+
+        {/* Footer */}
+        <Footer />
 
         {/* Modals */}
         <CVModal

@@ -52,7 +52,7 @@ export function SocialSection({ socialLinks }: SocialSectionProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-mono font-semibold mb-4">Connect</h3>
+        <h3 className="text-lg font-mono font-semibold mb-4">Social Links</h3>
         <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
           {socialLinks.map((link) => (
             <CustomButton
@@ -77,27 +77,6 @@ export function SocialSection({ socialLinks }: SocialSectionProps) {
               </Link>
             </CustomButton>
           ))}
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="pt-6 border-t border-white/10">
-        <div className="text-gray-400 text-sm space-y-3">
-          <div className="flex items-center gap-2">
-            <img
-              src="/logo-icon.png"
-              alt="NoirKit logo"
-              width="28"
-              height="28"
-              className="rounded"
-            />
-            <span className="font-semibold tracking-wide text-white">
-              NoirKit
-            </span>
-          </div>
-          <p className="text-xs">
-            © by Mohamed Gamal {new Date().getFullYear()}
-          </p>
         </div>
       </div>
     </div>
