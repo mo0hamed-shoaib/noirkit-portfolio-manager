@@ -463,10 +463,10 @@ export default function ContactFormPage() {
                 )}
 
                 {formData.fields.length > 0 && (
-                  <CustomButton className="w-full mt-6">
+                  <DashboardButton className="w-full mt-6">
                     <Mail className="w-4 h-4 mr-2" />
                     Send Message
-                  </CustomButton>
+                  </DashboardButton>
                 )}
               </div>
             </div>

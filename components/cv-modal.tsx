@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { CustomButton } from "./ui/custom-button";
+import { DashboardButton } from "./ui/dashboard-button";
 import { usePortfolioStore } from "@/lib/store";
 
 interface CVModalProps {
@@ -129,26 +130,27 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
                   <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Full Screen
                 </CustomButton>
-                <CustomButton
-                  size="sm"
-                  onClick={handleDownload}
-                  disabled={isDownloading}
-                  className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20 text-xs sm:text-sm"
-                >
-                  {isDownloading ? (
-                    <>
-                      <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />
-                      <span className="hidden sm:inline">Downloading...</span>
-                      <span className="sm:hidden">...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                      <span className="hidden sm:inline">Download PDF</span>
-                      <span className="sm:hidden">Download</span>
-                    </>
-                  )}
-                </CustomButton>
+                                 <CustomButton
+                   variant="outline"
+                   size="sm"
+                   onClick={handleDownload}
+                   disabled={isDownloading}
+                   className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20 text-xs sm:text-sm"
+                 >
+                   {isDownloading ? (
+                     <>
+                       <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />
+                       <span className="hidden sm:inline">Downloading...</span>
+                       <span className="sm:hidden">...</span>
+                     </>
+                   ) : (
+                     <>
+                       <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                       <span className="hidden sm:inline">Download PDF</span>
+                       <span className="sm:hidden">Download</span>
+                     </>
+                   )}
+                 </CustomButton>
               </div>
             )}
           </div>

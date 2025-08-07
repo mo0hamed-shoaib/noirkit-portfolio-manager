@@ -120,32 +120,39 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
         .order("order_index")
 
       // Fetch contact form
-      const { data: contactForms, error: contactFormError } = await supabase
+      const { data: contactForm, error: contactError } = await supabase
         .from("contact_form")
         .select(`
           *,
           contact_form_fields (*)
         `)
         .eq("user_id", userId)
-        .order("created_at", { ascending: false })
+        .single()
 
-      // Use the most recent contact form, or the first one if multiple exist
-      const contactForm = contactForms && contactForms.length > 0 ? contactForms[0] : null
-
-      // Transform data to match frontend types
-      const transformedPersonalInfo: PersonalInfo | null = profile
+      // Transform data
+      const transformedPersonalInfo: PersonalInfo = profile
         ? {
             id: profile.id,
             name: profile.name || "",
             jobTitle: profile.job_title || "",
             bio: profile.bio || "",
-            profileImage: profile.profile_image || "/placeholder.svg?height=60&width=60",
-            cvFile: profile.cv_file,
-            email: profile.email,
-            phone: profile.phone,
-            location: profile.location,
+            profileImage: profile.profile_image || "",
+            email: profile.email || "",
+            phone: profile.phone || "",
+            location: profile.location || "",
+            cvFile: profile.cv_file || "",
           }
-        : null
+        : {
+            id: "",
+            name: "",
+            jobTitle: "",
+            bio: "",
+            profileImage: "",
+            email: "",
+            phone: "",
+            location: "",
+            cvFile: "",
+          }
 
       const transformedSocialLinks: SocialLink[] =
         socialLinks?.map((link) => ({
@@ -153,6 +160,7 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
           platform: link.platform,
           url: link.url,
           icon: link.icon,
+          order: link.order_index,
         })) || []
 
       const transformedProjects: Project[] =
@@ -160,8 +168,8 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
           id: project.id,
           name: project.name,
           description: project.description,
-          deployLink: project.deploy_link,
-          githubLink: project.github_link,
+          deployLink: project.deploy_link || "",
+          githubLink: project.github_link || "",
           techStack: project.tech_stack || [],
           images: project.images || [],
           order: project.order_index,
@@ -224,32 +232,35 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
     }
   },
 
-  updatePersonalInfo: async (info) => {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error("No authenticated user")
+  updatePersonalInfo: async (info: Partial<PersonalInfo>) => {
+    const { personalInfo } = get()
+    if (!personalInfo?.id) return
 
-      const { error } = await supabase.from("profiles").upsert({
-        id: user.id,
-        email: user.email!,
-        name: info.name,
-        job_title: info.jobTitle,
-        bio: info.bio,
-        profile_image: info.profileImage,
-        cv_file: info.cvFile,
-        phone: info.phone,
-        location: info.location,
-      })
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          name: info.name,
+          job_title: info.jobTitle,
+          bio: info.bio,
+          profile_image: info.profileImage,
+          email: info.email,
+          phone: info.phone,
+          location: info.location,
+          cv_file: info.cvFile,
+        })
+        .eq("id", personalInfo.id)
 
       if (error) throw error
 
       set((state) => ({
-        personalInfo: state.personalInfo ? { ...state.personalInfo, ...info } : null,
+        personalInfo: state.personalInfo
+          ? { ...state.personalInfo, ...info }
+          : null,
       }))
     } catch (error: any) {
-      set({ error: error.message })
+      console.error("Error updating personal info:", error)
+      throw error
     }
   },
 

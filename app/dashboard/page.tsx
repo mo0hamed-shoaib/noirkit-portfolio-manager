@@ -1,8 +1,8 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
-import { Upload, Mail } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Upload, Mail, Save } from "lucide-react";
 import { usePortfolioStore } from "@/lib/store";
 import { CustomButton } from "@/components/ui/custom-button";
 import { CustomInput } from "@/components/ui/custom-input";
@@ -41,10 +41,12 @@ export default function PersonalInfoPage() {
     cvFile: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
+  const [lastSavedData, setLastSavedData] = useState<string>("");
 
   useEffect(() => {
     if (personalInfo) {
-      setFormData({
+      const newFormData = {
         name: personalInfo.name || "",
         jobTitle: personalInfo.jobTitle || "",
         bio: personalInfo.bio || "",
@@ -54,9 +56,37 @@ export default function PersonalInfoPage() {
         phone: personalInfo.phone || "",
         location: personalInfo.location || "",
         cvFile: personalInfo.cvFile || "",
-      });
+      };
+      setFormData(newFormData);
+      setLastSavedData(JSON.stringify(newFormData));
     }
   }, [personalInfo]);
+
+  // Auto-save functionality
+  const autoSave = useCallback(async (data: typeof formData) => {
+    const currentDataString = JSON.stringify(data);
+    if (currentDataString === lastSavedData) return;
+
+    setIsAutoSaving(true);
+    try {
+      await updatePersonalInfo(data);
+      setLastSavedData(currentDataString);
+      showToast("Changes saved automatically", "success");
+    } catch (error) {
+      showToast("Auto-save failed", "error");
+    } finally {
+      setIsAutoSaving(false);
+    }
+  }, [updatePersonalInfo, lastSavedData, showToast]);
+
+  // Debounced auto-save effect
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      autoSave(formData);
+    }, 2000); // Auto-save after 2 seconds of inactivity
+
+    return () => clearTimeout(timeoutId);
+  }, [formData, autoSave]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +94,7 @@ export default function PersonalInfoPage() {
 
     try {
       await updatePersonalInfo(formData);
+      setLastSavedData(JSON.stringify(formData));
       showToast("Personal information updated successfully!", "success");
     } catch (error) {
       showToast("Failed to update personal information", "error");
@@ -106,6 +137,15 @@ export default function PersonalInfoPage() {
             Update your personal details and contact information
           </p>
         </div>
+        {/* Auto-save indicator */}
+        <div className="flex items-center gap-2">
+          {isAutoSaving && (
+            <div className="flex items-center gap-2 text-green-400 text-sm">
+              <Save className="w-4 h-4 animate-pulse" />
+              <span>Auto-saving...</span>
+            </div>
+          )}
+        </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -146,10 +186,10 @@ export default function PersonalInfoPage() {
         </div>
 
         {/* Basic Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <Label htmlFor="name" className="text-white">
-              Name
+              Full Name *
             </Label>
             <CustomInput
               id="name"
@@ -157,13 +197,14 @@ export default function PersonalInfoPage() {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
-              placeholder="Your full name"
+              placeholder="Enter your full name"
+              required
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="jobTitle" className="text-white">
-              Job Title
+              Job Title *
             </Label>
             <CustomInput
               id="jobTitle"
@@ -171,48 +212,41 @@ export default function PersonalInfoPage() {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, jobTitle: e.target.value }))
               }
-              placeholder="Your job title"
+              placeholder="e.g., Senior Web Developer"
+              required
             />
           </div>
         </div>
 
-        {/* Contact Information */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-            <Mail className="w-5 h-5" />
-            Contact Information
-          </h3>
+        {/* Contact Info */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-white">
+              Email Address
+            </Label>
+            <CustomInput
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, email: e.target.value }))
+              }
+              placeholder="your.email@example.com"
+            />
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-white">
-                Email Address
-              </Label>
-              <CustomInput
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, email: e.target.value }))
-                }
-                placeholder="your@email.com"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="phone" className="text-white">
-                Phone Number
-              </Label>
-              <CustomInput
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, phone: e.target.value }))
-                }
-                placeholder="+1 (555) 123-4567"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone" className="text-white">
+              Phone Number
+            </Label>
+            <CustomInput
+              id="phone"
+              value={formData.phone}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, phone: e.target.value }))
+              }
+              placeholder="+1 (555) 123-4567"
+            />
           </div>
 
           <div className="space-y-2">
@@ -225,7 +259,7 @@ export default function PersonalInfoPage() {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, location: e.target.value }))
               }
-              placeholder="City, State/Country"
+              placeholder="City, Country"
             />
           </div>
         </div>
@@ -295,9 +329,7 @@ export default function PersonalInfoPage() {
             <div className="text-2xl font-bold text-white font-mono">
               {achievements?.length || 0}
             </div>
-            <p className="text-xs text-gray-400 font-mono">
-              Total achievements
-            </p>
+            <p className="text-xs text-gray-400 font-mono">Total achievements</p>
           </CardContent>
         </Card>
 
@@ -319,4 +351,3 @@ export default function PersonalInfoPage() {
     </div>
   );
 }
-// H

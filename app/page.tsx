@@ -118,14 +118,15 @@ export default function Portfolio() {
             This portfolio hasn't been configured yet. Sign in to the dashboard
             to set up your portfolio.
           </p>
-          <DashboardButton
+          <CustomButton
+            variant="outline"
             asChild
             className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
           >
             <a href="/auth/login" aria-label="Navigate to dashboard login page">
               Go to Dashboard
             </a>
-          </DashboardButton>
+          </CustomButton>
         </div>
       </div>
     );

@@ -165,37 +165,45 @@ export default function TechStackPage() {
     isDragging: boolean
   ) => (
     <div
-      className={`border border-white/20 rounded-xl p-4 bg-gray-900/50 hover:bg-gray-900/70 transition-all duration-200 group ${
+      className={`border border-white/20 rounded-xl p-3 sm:p-4 bg-gray-900/50 hover:bg-gray-900/70 transition-all duration-200 group ${
         isDragging ? "opacity-75 scale-105" : ""
       }`}
     >
-      <div className="flex items-center space-x-3">
-        {isReordering && (
-          <div className="cursor-grab active:cursor-grabbing">
-            <GripVertical className="w-4 h-4 text-gray-400" />
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          {isReordering && (
+            <div className="cursor-grab active:cursor-grabbing flex-shrink-0">
+              <GripVertical className="w-4 h-4 text-gray-400" />
+            </div>
+          )}
+          <div className="w-10 h-10 sm:w-12 sm:h-12 text-white group-hover:scale-110 transition-transform duration-200 flex-shrink-0">
+            {renderIcon(tech.icon, "w-full h-full")}
           </div>
-        )}
-        <div className="w-12 h-12 text-white group-hover:scale-110 transition-transform duration-200">
-          {renderIcon(tech.icon, "w-full h-full")}
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-medium truncate">{tech.name}</h3>
+          </div>
         </div>
-        <div className="flex-1">
-          <h3 className="text-sm font-medium">{tech.name}</h3>
-        </div>
+        
+        {/* Edit/Delete buttons - always visible on mobile */}
         {!isReordering && (
-          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="flex gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0">
             <DashboardButton
               variant="ghost"
               size="sm"
               onClick={() => openModal(tech)}
+              className="flex-1 sm:flex-none"
             >
               <Edit className="w-3 h-3" />
+              <span className="sm:hidden ml-2">Edit</span>
             </DashboardButton>
             <DashboardButton
               variant="ghost"
               size="sm"
               onClick={() => handleDelete(tech.id)}
+              className="flex-1 sm:flex-none"
             >
               <Trash2 className="w-3 h-3" />
+              <span className="sm:hidden ml-2">Delete</span>
             </DashboardButton>
           </div>
         )}
@@ -232,26 +240,27 @@ export default function TechStackPage() {
   ];
 
   return (
-    <div className="p-6 space-y-6 bg-black min-h-screen">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 space-y-6 bg-black min-h-screen">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white font-mono tracking-wide">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white font-mono tracking-wide">
             Tech Stack
           </h1>
           <p className="text-gray-400 mt-2 font-mono text-sm tracking-wide">
             Manage your technology stack and skills
           </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
           {techStack.length > 0 && (
             <DashboardButton
               variant={isReordering ? "default" : "outline"}
               onClick={() => setIsReordering(!isReordering)}
+              className="w-full sm:w-auto"
             >
               {isReordering ? "Done" : "Reorder"}
             </DashboardButton>
           )}
-          <DashboardButton onClick={() => openModal()}>
+          <DashboardButton onClick={() => openModal()} className="w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" />
             Add Technology
           </DashboardButton>
@@ -303,10 +312,10 @@ export default function TechStackPage() {
 
           {/* Empty State */}
           {techStack.length === 0 && (
-            <div className="col-span-full border border-white/20 rounded-xl p-12 text-center bg-black/30 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
+            <div className="col-span-full border border-white/20 rounded-xl p-6 sm:p-12 text-center bg-black/30 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
               <Code className="w-12 h-12 text-gray-500 mx-auto mb-4" />
               <p className="text-gray-500 mb-4">No technologies added yet</p>
-              <DashboardButton onClick={() => openModal()}>
+              <DashboardButton onClick={() => openModal()} className="w-full sm:w-auto">
                 Add Your First Technology
               </DashboardButton>
             </div>
@@ -316,14 +325,14 @@ export default function TechStackPage() {
 
       {/* Tech Stack Modal */}
       <Dialog open={isModalOpen} onOpenChange={closeModal}>
-        <DialogContent className="max-w-2xl bg-black border border-white text-white max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] max-w-2xl bg-black border border-white text-white max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-lg sm:text-xl">
               {editingTech ? "Edit Technology" : "Add New Technology"}
             </DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div className="space-y-2">
               <Label htmlFor="name">Technology Name *</Label>
               <CustomInput
@@ -338,13 +347,14 @@ export default function TechStackPage() {
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <Label htmlFor="icon">SVG Icon Path *</Label>
                 <DashboardButton
                   type="button"
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowSvgPreview(!showSvgPreview)}
+                  className="w-full sm:w-auto"
                 >
                   {showSvgPreview ? (
                     <EyeOff className="w-4 h-4 mr-1" />
@@ -377,8 +387,8 @@ export default function TechStackPage() {
               )}
             </div>
 
-            <div className="flex gap-4">
-              <DashboardButton type="submit">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <DashboardButton type="submit" className="flex-1 sm:flex-none">
                 <Save className="w-4 h-4 mr-2" />
                 {editingTech ? "Update Technology" : "Add Technology"}
               </DashboardButton>
@@ -386,6 +396,7 @@ export default function TechStackPage() {
                 type="button"
                 variant="outline"
                 onClick={closeModal}
+                className="flex-1 sm:flex-none"
               >
                 Cancel
               </DashboardButton>

@@ -189,18 +189,18 @@ export default function ProjectsPage() {
     isDragging: boolean
   ) => (
     <div
-      className={`border border-white/20 rounded-xl p-4 bg-black/50 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm group ${
+      className={`border border-white/20 rounded-xl p-3 sm:p-4 bg-black/50 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm group ${
         isDragging ? "opacity-75 scale-105" : ""
       }`}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
         {isReordering && (
-          <div className="cursor-grab active:cursor-grabbing mt-2">
+          <div className="cursor-grab active:cursor-grabbing mt-2 self-start">
             <GripVertical className="w-4 h-4 text-gray-400" />
           </div>
         )}
 
-        <div className="aspect-video bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-24">
+        <div className="aspect-video bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-full sm:w-24">
           {project.images && project.images.length > 0 && project.images[0] ? (
             <Image
               src={project.images[0] || "/placeholder.svg"}
@@ -217,12 +217,40 @@ export default function ProjectsPage() {
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold mb-2 truncate">
-            {project.name}
-          </h3>
-          <p className="text-gray-400 text-sm mb-3 line-clamp-2">
-            {project.description}
-          </p>
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 mb-3">
+            <div className="flex-1 min-w-0">
+              <h3 className="text-lg font-semibold mb-2 truncate">
+                {project.name}
+              </h3>
+              <p className="text-gray-400 text-sm mb-3 line-clamp-2">
+                {project.description}
+              </p>
+            </div>
+            
+            {/* Edit/Delete buttons - always visible on mobile */}
+            {!isReordering && (
+              <div className="flex gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
+                <DashboardButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => openModal(project)}
+                  className="flex-1 sm:flex-none"
+                >
+                  <Edit className="w-4 h-4" />
+                  <span className="sm:hidden ml-2">Edit</span>
+                </DashboardButton>
+                <DashboardButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleDelete(project.id)}
+                  className="flex-1 sm:flex-none"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span className="sm:hidden ml-2">Delete</span>
+                </DashboardButton>
+              </div>
+            )}
+          </div>
 
           <div className="flex flex-wrap gap-2 mb-4">
             {(project.techStack || []).slice(0, 3).map((tech, techIndex) => (
@@ -241,12 +269,13 @@ export default function ProjectsPage() {
             )}
           </div>
 
-          <div className="flex justify-between items-center">
+          <div className="flex justify-start sm:justify-between items-center">
             <div className="flex gap-2">
               {project.deployLink && (
                 <DashboardButton variant="ghost" size="sm" asChild>
                   <a href={project.deployLink} target="_blank" rel="noreferrer">
                     <ExternalLink className="w-4 h-4" />
+                    <span className="sm:hidden ml-2">Live</span>
                   </a>
                 </DashboardButton>
               )}
@@ -254,28 +283,11 @@ export default function ProjectsPage() {
                 <DashboardButton variant="ghost" size="sm" asChild>
                   <a href={project.githubLink} target="_blank" rel="noreferrer">
                     <Github className="w-4 h-4" />
+                    <span className="sm:hidden ml-2">Code</span>
                   </a>
                 </DashboardButton>
               )}
             </div>
-            {!isReordering && (
-              <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <DashboardButton
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => openModal(project)}
-                >
-                  <Edit className="w-4 h-4" />
-                </DashboardButton>
-                <DashboardButton
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDelete(project.id)}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </DashboardButton>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -283,26 +295,27 @@ export default function ProjectsPage() {
   );
 
   return (
-    <div className="p-6 space-y-6 bg-black min-h-screen">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-6 space-y-6 bg-black min-h-screen">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white font-mono tracking-wide">
+          <h1 className="text-2xl sm:text-3xl font-bold text-white font-mono tracking-wide">
             Projects
           </h1>
           <p className="text-gray-400 mt-2 font-mono text-sm tracking-wide">
             Manage your portfolio projects
           </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
           {projects.length > 0 && (
             <DashboardButton
               variant={isReordering ? "default" : "outline"}
               onClick={() => setIsReordering(!isReordering)}
+              className="w-full sm:w-auto"
             >
               {isReordering ? "Done" : "Reorder"}
             </DashboardButton>
           )}
-          <DashboardButton onClick={() => openModal()}>
+          <DashboardButton onClick={() => openModal()} className="w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" />
             Add Project
           </DashboardButton>
@@ -328,12 +341,12 @@ export default function ProjectsPage() {
 
       {/* Empty State */}
       {projects.length === 0 && (
-        <div className="border border-white/20 rounded-xl p-12 text-center bg-black/30 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
+        <div className="border border-white/20 rounded-xl p-6 sm:p-12 text-center bg-black/30 hover:bg-white/5 transition-all duration-300 backdrop-blur-sm">
           <div className="w-12 h-12 bg-gray-500 rounded mx-auto mb-4 flex items-center justify-center">
             <Plus className="w-6 h-6 text-gray-400" />
           </div>
           <p className="text-gray-500 mb-4">No projects added yet</p>
-          <DashboardButton onClick={() => openModal()}>
+          <DashboardButton onClick={() => openModal()} className="w-full sm:w-auto">
             Add Your First Project
           </DashboardButton>
         </div>
@@ -341,14 +354,14 @@ export default function ProjectsPage() {
 
       {/* Project Modal */}
       <Dialog open={isModalOpen} onOpenChange={closeModal}>
-        <DialogContent className="max-w-2xl bg-black border border-white text-white max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[95vw] max-w-2xl bg-black border border-white text-white max-h-[90vh] overflow-y-auto p-4 sm:p-6">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-lg sm:text-xl">
               {editingProject ? "Edit Project" : "Add New Project"}
             </DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             <div className="space-y-2">
               <Label htmlFor="name">Project Name</Label>
               <CustomInput
@@ -380,7 +393,7 @@ export default function ProjectsPage() {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="deployLink">Deploy Link (Optional)</Label>
                 <CustomInput
@@ -428,7 +441,7 @@ export default function ProjectsPage() {
             <div className="space-y-2">
               <Label>Project Images</Label>
               <div className="space-y-4">
-                <DashboardButton type="button" variant="outline" asChild>
+                <DashboardButton type="button" variant="outline" asChild className="w-full sm:w-auto">
                   <label className="cursor-pointer">
                     <Upload className="w-4 h-4 mr-2" />
                     Upload Images
@@ -443,7 +456,7 @@ export default function ProjectsPage() {
                 </DashboardButton>
 
                 {formData.images && formData.images.length > 0 && (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                     {formData.images.map((image, index) => (
                       <div
                         key={index}
@@ -471,14 +484,15 @@ export default function ProjectsPage() {
               </div>
             </div>
 
-            <div className="flex gap-4">
-              <DashboardButton type="submit">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <DashboardButton type="submit" className="flex-1 sm:flex-none">
                 {editingProject ? "Update Project" : "Add Project"}
               </DashboardButton>
               <DashboardButton
                 type="button"
                 variant="outline"
                 onClick={closeModal}
+                className="flex-1 sm:flex-none"
               >
                 Cancel
               </DashboardButton>

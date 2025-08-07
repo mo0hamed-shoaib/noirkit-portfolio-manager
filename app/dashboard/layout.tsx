@@ -20,7 +20,6 @@ import {
   X,
   Zap,
   HardDrive,
-  BarChart3,
 } from "lucide-react";
 import { CustomButton } from "@/components/ui/custom-button";
 import { DashboardButton } from "@/components/ui/dashboard-button";
@@ -39,7 +38,7 @@ const navigation = [
   { name: "Contact Form", href: "/dashboard/contact", icon: Mail },
   { name: "CV Management", href: "/dashboard/cv", icon: FileText },
   { name: "Storage", href: "/dashboard/storage", icon: HardDrive },
-  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+
   { name: "Data Backup", href: "/dashboard/backup", icon: Database },
 ];
 
