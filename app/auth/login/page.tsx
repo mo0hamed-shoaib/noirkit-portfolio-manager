@@ -54,7 +54,7 @@ export default function LoginPage() {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-8">
             <img
-              src="/icon.png"
+              src="/logo-icon.png"
               alt="NoirKit logo"
               width="32"
               height="32"

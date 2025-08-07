@@ -92,7 +92,7 @@ export function ContactAchievementsSection({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Contact Section */}
-      <section className="border border-white/20 rounded-xl p-4 sm:p-6 bg-gradient-to-br from-gray-900/30 to-black/30 backdrop-blur-sm group hover:border-white/30 transition-all duration-300 relative overflow-hidden flex flex-col">
+      <section className="border border-white/20 rounded-xl p-4 sm:p-6 bg-black group hover:border-white/30 transition-all duration-300 relative overflow-hidden flex flex-col">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
 
         <div className="flex items-start justify-between mb-4 sm:mb-6">
@@ -204,7 +204,7 @@ export function ContactAchievementsSection({
       </section>
 
       {/* Achievements/Education Section */}
-      <section className="border border-white/20 rounded-xl p-4 sm:p-6 bg-gradient-to-br from-gray-900/30 to-black/30 backdrop-blur-sm relative overflow-hidden flex flex-col group hover:border-white/30 transition-all duration-300">
+              <section className="border border-white/20 rounded-xl p-4 sm:p-6 bg-black relative overflow-hidden flex flex-col group hover:border-white/30 transition-all duration-300">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
 
         <div className="flex items-center justify-between mb-4 sm:mb-6">

@@ -167,17 +167,7 @@ export default function Portfolio() {
               role="main"
               aria-label="Portfolio content"
             >
-              {/* Mobile Menu Button */}
-              <div className="flex justify-end lg:hidden">
-                <CustomButton
-                  variant="outline"
-                  size="icon"
-                  aria-label="Open mobile navigation menu"
-                  className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
-                >
-                  <Menu className="w-6 h-6" />
-                </CustomButton>
-              </div>
+
 
               <ProjectsSection projects={projects} techStack={techStack} />
 

@@ -12,27 +12,13 @@
   "categories": ["productivity", "business"],
   "icons": [
     {
-      "src": "/icon.png",
+      "src": "/logo-icon.png",
       "sizes": "32x32",
       "type": "image/png",
       "purpose": "any maskable"
-    },
-    {
-      "src": "/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any"
     }
   ],
-  "screenshots": [
-    {
-      "src": "/og-image.png",
-      "sizes": "1200x630",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "NoirKit Portfolio Screenshot"
-    }
-  ],
+
   "shortcuts": [
     {
       "name": "View Projects",
@@ -41,7 +27,7 @@
       "url": "/#projects",
       "icons": [
         {
-          "src": "/icon.png",
+          "src": "/logo-icon.png",
           "sizes": "32x32"
         }
       ]
@@ -53,7 +39,7 @@
       "url": "/#contact",
       "icons": [
         {
-          "src": "/icon.png",
+          "src": "/logo-icon.png",
           "sizes": "32x32"
         }
       ]

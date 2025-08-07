@@ -12,12 +12,12 @@ import {
   X,
   Github,
   Linkedin,
-  Twitter,
   Instagram,
   Facebook,
   Youtube,
   Globe,
 } from "lucide-react";
+import { XIcon } from "@/components/ui/x-icon";
 import { usePortfolioStore } from "@/lib/store";
 import type { SocialLink } from "@/lib/types";
 import { CustomInput } from "@/components/ui/custom-input";
@@ -169,9 +169,9 @@ export default function SocialLinksPage() {
     const iconMap: Record<string, React.ComponentType<any>> = {
       github: Github,
       linkedin: Linkedin,
-      twitter: Twitter,
-      "twitter/x": Twitter,
-      x: Twitter,
+      twitter: XIcon,
+      "twitter/x": XIcon,
+      x: XIcon,
       instagram: Instagram,
       facebook: Facebook,
       youtube: Youtube,

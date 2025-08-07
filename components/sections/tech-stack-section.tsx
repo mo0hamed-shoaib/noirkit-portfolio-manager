@@ -47,7 +47,7 @@ export function TechStackSection({ techStack }: TechStackSectionProps) {
 
   if (techStack.length === 0) {
     return (
-      <section className="border border-white/20 rounded-xl p-6 bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-sm relative overflow-hidden">
+      <section className="border border-white/20 rounded-xl p-6 bg-black relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
         <div className="mb-6">
           <h2 className="text-2xl font-mono text-white font-bold">My Stack</h2>
@@ -61,7 +61,7 @@ export function TechStackSection({ techStack }: TechStackSectionProps) {
   }
 
   return (
-    <section className="border border-white/20 rounded-xl p-6 bg-gradient-to-br from-gray-900/50 to-black/50 backdrop-blur-sm relative overflow-hidden group hover:border-white/30 transition-all duration-300">
+    <section className="border border-white/20 rounded-xl p-6 bg-black relative overflow-hidden group hover:border-white/30 transition-all duration-300">
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
 
       <div className="mb-6">

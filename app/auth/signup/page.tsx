@@ -82,7 +82,7 @@ export default function SignupPage() {
           {/* Brand Header */}
           <div className="flex items-center justify-center gap-3 mb-12">
             <img
-              src="/icon.png"
+              src="/logo-icon.png"
               alt="NoirKit logo"
               width="32"
               height="32"
@@ -118,7 +118,7 @@ export default function SignupPage() {
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-8">
             <img
-              src="/icon.png"
+              src="/logo-icon.png"
               alt="NoirKit logo"
               width="32"
               height="32"

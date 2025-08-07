@@ -96,7 +96,7 @@ export default function DashboardLayout({
               <div className="flex-shrink-0 p-3 border-b border-white/20">
                 <div className="flex items-center gap-3 mb-4">
                   <Image
-                    src="/icon.png"
+                    src="/logo-icon.png"
                     alt="NoirKit Logo"
                     width={32}
                     height={32}

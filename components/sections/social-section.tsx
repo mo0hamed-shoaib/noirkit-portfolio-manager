@@ -4,12 +4,12 @@ import Link from "next/link";
 import {
   Github,
   Linkedin,
-  Twitter,
   Instagram,
   Facebook,
   Youtube,
   Globe,
 } from "lucide-react";
+import { XIcon } from "@/components/ui/x-icon";
 import type { SocialLink } from "@/lib/types";
 import { CustomButton } from "@/components/ui/custom-button";
 import { trackSocialLinkClick } from "@/lib/analytics";
@@ -23,9 +23,9 @@ export function SocialSection({ socialLinks }: SocialSectionProps) {
     const iconMap: Record<string, React.ComponentType<any>> = {
       github: Github,
       linkedin: Linkedin,
-      twitter: Twitter,
-      "twitter/x": Twitter,
-      x: Twitter,
+      twitter: XIcon,
+      "twitter/x": XIcon,
+      x: XIcon,
       instagram: Instagram,
       facebook: Facebook,
       youtube: Youtube,
@@ -85,7 +85,7 @@ export function SocialSection({ socialLinks }: SocialSectionProps) {
         <div className="text-gray-400 text-sm space-y-3">
           <div className="flex items-center gap-2">
             <img
-              src="/icon.png"
+              src="/logo-icon.png"
               alt="NoirKit logo"
               width="28"
               height="28"

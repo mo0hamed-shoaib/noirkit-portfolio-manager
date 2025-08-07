@@ -71,30 +71,20 @@ export const metadata: Metadata = {
     title: "NoirKit Portfolio - Professional Developer Portfolio",
     description:
       "Professional developer portfolio showcasing projects, skills, and achievements. Built with modern web technologies and a sleek noir aesthetic.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "NoirKit Portfolio Preview",
-      },
-    ],
+
   },
   twitter: {
     card: "summary_large_image",
     title: "NoirKit Portfolio - Professional Developer Portfolio",
     description:
       "Professional developer portfolio showcasing projects, skills, and achievements.",
-    images: ["/og-image.png"],
+
     creator: "@your-twitter-handle",
   },
   icons: {
     icon: [
       { url: "/favicon.ico" },
-      { url: "/icon.png", sizes: "32x32", type: "image/png" },
-    ],
-    apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/logo-icon.png", sizes: "32x32", type: "image/png" },
     ],
   },
   manifest: "/manifest.json",
@@ -138,7 +128,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={inter.className}>
+      <body className={inter.className} suppressHydrationWarning>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

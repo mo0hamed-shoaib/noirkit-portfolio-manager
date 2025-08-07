@@ -39,7 +39,7 @@ function ConfirmEmailContent() {
         {/* Brand Header */}
         <div className="flex items-center justify-center gap-3 mb-12">
           <img
-            src="/icon.png"
+                          src="/logo-icon.png"
             alt="NoirKit logo"
             width="32"
             height="32"
