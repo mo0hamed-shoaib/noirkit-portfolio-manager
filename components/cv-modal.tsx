@@ -100,31 +100,24 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
         console.log("Iframe loading timeout, switching to fallback");
         setIsLoading(false);
         setHasError(true);
-      }, 5000); // Reduced to 5 seconds for faster feedback
+      }, 3000); // 3 seconds timeout
 
       return () => clearTimeout(timeout);
     }
   }, [isLoading, pdfUrl]);
 
-  // Additional check for iframe load issues
+  // Force error state if loading takes too long
   useEffect(() => {
-    if (pdfUrl && !pdfUrl.startsWith('data:')) {
-      // For non-base64 URLs, check if they're accessible
-      fetch(pdfUrl, { method: 'HEAD', mode: 'cors' })
-        .then(response => {
-          if (!response.ok) {
-            console.error("PDF URL not accessible:", response.status);
-            setIsLoading(false);
-            setHasError(true);
-          }
-        })
-        .catch(error => {
-          console.error("PDF URL fetch error:", error);
-          setIsLoading(false);
-          setHasError(true);
-        });
+    if (isLoading) {
+      const forceErrorTimeout = setTimeout(() => {
+        console.log("Forcing error state due to long loading time");
+        setIsLoading(false);
+        setHasError(true);
+      }, 8000); // 8 seconds maximum
+
+      return () => clearTimeout(forceErrorTimeout);
     }
-  }, [pdfUrl]);
+  }, [isLoading]);
 
   // Reset states when modal opens
   const handleOpenChange = (open: boolean) => {
@@ -137,7 +130,9 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
         if (personalInfo.cvFile.startsWith('data:')) {
           setPdfUrl(personalInfo.cvFile);
         } else {
-          // For Supabase storage URLs, try to create a blob URL for better compatibility
+          // For Supabase storage URLs, use directly first, then try blob if needed
+          setPdfUrl(personalInfo.cvFile);
+          // Also try to create a blob URL as backup
           createBlobUrl(personalInfo.cvFile);
         }
       }
@@ -317,9 +312,7 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
                 title="CV Preview"
                 onLoad={handleIframeLoad}
                 onError={handleIframeError}
-                sandbox="allow-same-origin allow-scripts allow-forms allow-downloads"
                 allow="fullscreen"
-                referrerPolicy="no-referrer"
               />
             </div>
           )}
