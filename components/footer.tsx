@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Github, Linkedin } from "lucide-react";
-import { CustomButton } from "@/components/ui/custom-button";
+import { Github, Linkedin, Settings } from "lucide-react";
 
 export function Footer() {
+
   return (
     <footer className="border-t border-border bg-background/50 backdrop-blur-sm">
       <div className="container mx-auto px-6 py-4">
@@ -25,8 +25,16 @@ export function Footer() {
             © Mohamed Gamal 2025
           </div>
 
-          {/* Social Links */}
+          {/* Social Links & Dashboard */}
           <div className="flex items-center gap-4">
+            <Link
+              href="/dashboard"
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Dashboard"
+            >
+              <Settings className="w-4 h-4 mb-1" />
+            </Link>
+            <span className="text-xs text-muted-foreground">|</span>
             <Link
               href="https://github.com/mo0hamed-shoaib/noirkit-portfolio-manager"
               target="_blank"
