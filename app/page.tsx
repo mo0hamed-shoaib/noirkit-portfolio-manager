@@ -149,7 +149,7 @@ export default function Portfolio() {
           <div className="space-y-8">
             {/* Top Section: Consistent Height Cards */}
             <div className="grid grid-cols-1 2xl:grid-cols-12 gap-6">
-              {/* Left Sidebar - Profile & Quick Actions (Fixed Height) */}
+              {/* Left Sidebar - Profile &Actions (Fixed Height) */}
               <aside className="2xl:col-span-4 space-y-6">
                 <div className="animate-fadeInUp">
                   <ProfileSection personalInfo={personalInfo} />

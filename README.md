@@ -172,7 +172,7 @@ Experience all loading animations at `/loading-demo`:
 NoirKit features a **comprehensive setup guide** that makes portfolio creation intuitive and enjoyable:
 
 - **Visual step-by-step breakdown** of the entire setup process
-- **Time estimates** for each section (~25 minutes total)
+- **Time estimates** for each section (~5 minutes total)
 - **Feature previews** showing exactly what you'll be creating
 - **Interactive animations** that engage and guide users
 - **Clear value proposition** with immediate benefits
@@ -189,13 +189,13 @@ NoirKit features a **comprehensive setup guide** that makes portfolio creation i
 9. **Go Live** → Share your public portfolio URL
 
 ### ⏱️ **Setup Time Breakdown**
-- **Personal Info**: 2 minutes
-- **Projects**: 10 minutes  
-- **Tech Stack**: 3 minutes
-- **Achievements**: 5 minutes
+- **Personal Info**: 3 minutes
+- **Projects**: 5 minutes  
+- **Tech Stack**: 5 minutes
+- **Milestones**: 3 minutes
 - **Social Links**: 2 minutes
-- **Contact Form**: 3 minutes
-- **Total**: ~25 minutes
+- **Contact Form**: 2 minutes
+- **Total**: ~20 minutes
 
 ### 🎨 Customization
 

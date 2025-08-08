@@ -69,7 +69,7 @@ export function TechStackSection({ techStack }: TechStackSectionProps) {
         <p className="text-gray-400 text-sm mt-1">Technologies I work with</p>
       </div>
 
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
         {techStack.map((tech, index) => (
           <div
             key={tech.id}

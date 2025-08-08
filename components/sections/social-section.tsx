@@ -87,7 +87,7 @@ export function SocialSection({ socialLinks, onViewCV, onContactClick }: SocialS
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-2xl font-mono font-bold mb-4">Quick Actions & Socials</h3>
+        <h3 className="text-2xl font-mono font-bold mb-4">Actions & Socials</h3>
         
         {/* All Buttons in One Line */}
         <div className="flex items-center gap-3 flex-wrap">

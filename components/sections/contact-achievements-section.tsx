@@ -4,8 +4,9 @@ import { useState } from "react";
 import {
   GraduationCap,
   Award,
-  ArrowRight,
+  MousePointerClick,
   Trophy,
+  Sparkles,
 } from "lucide-react";
 import type { Achievement } from "@/lib/types";
 import { CustomButton } from "@/components/ui/custom-button";
@@ -44,14 +45,12 @@ export function ContactAchievementsSection({
               <Trophy className="w-4 h-4 text-yellow-400" />
             </div>
             <div className="min-w-0 flex-1">
-              <h2 className="text-2xl font-mono text-white font-bold">Achievements & Education</h2>
+              <h2 className="text-2xl font-mono text-white font-bold">Milestones</h2>
               <div className="flex items-center gap-2 text-sm text-gray-400">
-                <span>{achievements.length} Events</span>
                 {achievements.length > 0 && (
                   <>
-                    <span>•</span>
                     <span>{achievements.filter(a => a.type === "achievement").length} Achievements</span>
-                    <span>•</span>
+                  <span>•</span>
                     <span>{achievements.filter(a => a.type === "education").length} Education</span>
                   </>
                 )}
@@ -89,7 +88,7 @@ export function ContactAchievementsSection({
                     {achievement.date}
                   </span>
                 </div>
-                <ArrowRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                <MousePointerClick className="w-4 h-4 text-gray-400 flex-shrink-0" />
               </button>
             ))}
             {achievements.length > 9 && (

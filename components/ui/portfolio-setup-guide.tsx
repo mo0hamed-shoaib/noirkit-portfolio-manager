@@ -23,28 +23,28 @@ const setupSteps = [
     icon: User,
     title: "Personal Information",
     description: "Add your name, job title, bio, and profile photo",
-    estimatedTime: "2 min",
+    estimatedTime: "3 min",
     features: ["Professional headshot", "Compelling bio", "Contact details"]
   },
   {
     icon: Briefcase,
     title: "Showcase Projects",
     description: "Upload your best work with descriptions and live links",
-    estimatedTime: "10 min",
+    estimatedTime: "5 min",
     features: ["Project images", "Live demos", "GitHub repositories", "Tech stacks"]
   },
   {
     icon: Code,
     title: "Tech Stack",
     description: "Display your technical skills with custom icons",
-    estimatedTime: "3 min",
+    estimatedTime: "5 min",
     features: ["Programming languages", "Frameworks", "Tools", "Custom SVG icons"]
   },
   {
     icon: Award,
-    title: "Achievements",
+    title: "Milestones",
     description: "Highlight education, certifications, and milestones",
-    estimatedTime: "5 min",
+    estimatedTime: "3 min",
     features: ["Education history", "Certifications", "Awards", "Professional milestones"]
   },
   {
@@ -58,7 +58,7 @@ const setupSteps = [
     icon: Mail,
     title: "Contact Form",
     description: "Set up custom contact forms for inquiries",
-    estimatedTime: "3 min",
+    estimatedTime: "2 min",
     features: ["Custom fields", "Form validation", "Submission tracking"]
   }
 ];

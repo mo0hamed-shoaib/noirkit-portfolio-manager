@@ -200,10 +200,10 @@ export default function AchievementsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white font-mono tracking-wide">
-            Achievements & Education
+            Milestones
           </h1>
           <p className="text-gray-400 mt-2 font-mono text-sm tracking-wide">
-            Manage your accomplishments and educational background
+            Manage your achievements and educational background
           </p>
         </div>
         <DashboardButton onClick={() => openModal()}>

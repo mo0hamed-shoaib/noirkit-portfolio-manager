@@ -261,19 +261,6 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
                 <ExternalLink className="w-3 h-3 mr-1" />
                 Full Screen
               </CustomButton>
-              <CustomButton
-                size="sm"
-                onClick={handleDownload}
-                disabled={isDownloading}
-                className="flex-1 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20 text-xs"
-              >
-                {isDownloading ? (
-                  <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                ) : (
-                  <Download className="w-3 h-3 mr-1" />
-                )}
-                Download
-              </CustomButton>
             </div>
           </div>
         )}

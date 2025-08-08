@@ -8,7 +8,7 @@ export function ServicesFactsSection() {
       {/* Services & Expertise */}
       <div className="border border-white/20 rounded-xl p-6 bg-black/20 group hover:border-white/30 transition-all duration-300">
         <h3 className="text-2xl font-mono font-bold mb-6 text-white group-hover:text-white/90 transition-colors duration-200">
-          Services & Expertise
+          Expertise
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group/item">

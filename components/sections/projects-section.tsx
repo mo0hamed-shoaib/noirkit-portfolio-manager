@@ -72,29 +72,29 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
             </p>
           </div>
 
-          {/* Navigation Controls - Moved to opposite side of "My Projects" */}
+          {/* Navigation Controls - Centered on mobile, right-aligned on desktop */}
           {totalPages > 1 && (
-            <div className="flex items-center gap-2">
-                             <CustomButton
+            <div className="flex items-center gap-1 justify-center sm:justify-end">
+              <CustomButton
                  variant="outline"
                  size="sm"
                  onClick={goToPrevious}
-                 className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
+                 className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20 flex items-center gap-1 px-3 py-2"
                >
-                <ChevronLeft className="w-4 h-4 mr-1" />
-                Previous
+                <ChevronLeft className="w-4 h-4" />
+                <span>Previous</span>
               </CustomButton>
-              <span className="text-sm text-gray-400 px-2">
+              <span className="text-sm text-gray-400 px-2 whitespace-nowrap">
                 {currentIndex + 1} of {totalPages}
               </span>
-                             <CustomButton
+              <CustomButton
                  variant="outline"
                  size="sm"
                  onClick={goToNext}
-                 className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
+                 className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20 flex items-center gap-1 px-3 py-2"
                >
-                Next
-                <ChevronRight className="w-4 h-4 ml-1" />
+                <span>Next</span>
+                <ChevronRight className="w-4 h-4" />
               </CustomButton>
             </div>
           )}
@@ -110,7 +110,7 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
           >
             {projectPages.map((pageProjects, pageIndex) => (
               <div key={pageIndex} className="w-full flex-shrink-0">
-                <div className="grid grid-cols-1 2xl:grid-cols-3 gap-4 min-h-[200px]">
+                <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 min-h-[250px] sm:min-h-[200px]">
                   {pageProjects.map((project) => (
                     <ProjectCard
                       key={project.id}
