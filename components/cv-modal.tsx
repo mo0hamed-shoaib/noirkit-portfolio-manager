@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Download,
   ExternalLink,
@@ -82,14 +82,29 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
   };
 
   const handleIframeLoad = () => {
+    console.log("Iframe loaded successfully");
     setIsLoading(false);
     setHasError(false);
   };
 
   const handleIframeError = () => {
+    console.error("Iframe failed to load");
     setIsLoading(false);
     setHasError(true);
   };
+
+  // Add timeout to prevent infinite loading
+  useEffect(() => {
+    if (isLoading && pdfUrl) {
+      const timeout = setTimeout(() => {
+        console.log("Iframe loading timeout, switching to fallback");
+        setIsLoading(false);
+        setHasError(true);
+      }, 10000); // 10 second timeout
+
+      return () => clearTimeout(timeout);
+    }
+  }, [isLoading, pdfUrl]);
 
   // Reset states when modal opens
   const handleOpenChange = (open: boolean) => {
@@ -102,12 +117,28 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
         if (personalInfo.cvFile.startsWith('data:')) {
           setPdfUrl(personalInfo.cvFile);
         } else {
-          // For Supabase storage URLs, use directly (they work better in iframes)
-          setPdfUrl(personalInfo.cvFile);
+          // For Supabase storage URLs, try to create a blob URL for better compatibility
+          createBlobUrl(personalInfo.cvFile);
         }
       }
     } else {
       onClose();
+    }
+  };
+
+  // Create blob URL for better iframe compatibility
+  const createBlobUrl = async (url: string) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch PDF");
+      
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      setPdfUrl(blobUrl);
+    } catch (error) {
+      console.error("Failed to create blob URL, using direct URL:", error);
+      // Fallback to direct URL
+      setPdfUrl(url);
     }
   };
 
@@ -252,7 +283,9 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
                 title="CV Preview"
                 onLoad={handleIframeLoad}
                 onError={handleIframeError}
-                sandbox="allow-same-origin allow-scripts allow-forms"
+                sandbox="allow-same-origin allow-scripts allow-forms allow-downloads"
+                allow="fullscreen"
+                referrerPolicy="no-referrer"
               />
             </div>
           )}
