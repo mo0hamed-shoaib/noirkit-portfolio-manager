@@ -10,6 +10,14 @@
   **NoirKit** is a modern portfolio platform that makes creating stunning developer portfolios effortless and engaging. Built with Next.js 14 and Supabase, it features **animated canvas backgrounds**, **interactive setup guides** with realistic time estimates, and **staggered content reveals** that create movie-like transitions. 
 
   Manage your complete professional presence through an intuitive dashboard - from projects and tech stacks to achievements and custom contact forms - while visitors enjoy a **lightning-fast, mobile-optimized** experience with **smooth animations** throughout.
+
+  <br>
+  
+  <a href="https://mohamedgamal-noir.vercel.app/" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Live%20Demo-View%20Portfolio-00C853?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo">
+  </a>
+  
+  <br><br>
   
   [![Next.js](https://img.shields.io/badge/Next.js-14.2.16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
@@ -27,25 +35,27 @@
 
 ### 👨‍💼 For Portfolio Owners
 - 🎨 **Complete Portfolio Management** - Personal info, projects, tech stack, achievements, social links
-- 📁 **Smart File Management** - Upload profile images, project screenshots, and CV files with organized storage
+- 📁 **Smart CV Management** - Direct link integration for seamless CV sharing and access
 - 🎯 **Drag & Drop Reordering** - Organize content order with intuitive drag-and-drop functionality
 - 📝 **Custom Contact Forms** - Build and customize contact forms with various field types
 - 📊 **Contact Management** - View and manage contact form submissions in one place
 - 💾 **Data Backup & Restore** - Export and import your complete portfolio data
 - 🔒 **Secure Authentication** - Email-based authentication with Supabase
-- 📱 **Mobile Dashboard** - Fully responsive management interface
+- 📱 **Mobile Dashboard** - Fully responsive management interface with optimized touch interactions
 - 🎨 **Modern UI** - Clean, professional design with dark mode support
 - ⚡ **Enhanced Loading Experience** - Animated canvas backgrounds with smooth progress indication
 - 🌟 **Interactive Setup Guide** - Step-by-step onboarding with time estimates and feature previews
+- 🎛️ **Optimized Dashboard Layout** - Compact, organized interface with improved navigation
 
 ### 🌐 For Visitors
 - 🎭 **Beautiful Portfolio Display** - Responsive, professional portfolio presentation
-- 📱 **Mobile Optimized** - Perfect experience across all devices
+- 📱 **Mobile Optimized** - Perfect experience across all devices with touch-friendly interactions
 - 📬 **Easy Contact** - Streamlined contact forms to reach portfolio owners
 - ⚡ **Lightning Fast** - Optimized performance with Next.js 14 and caching
 - 🔍 **SEO Optimized** - Built-in meta tags, Open Graph, and structured data
 - 🎬 **Cinematic Loading** - Engaging animated backgrounds with staggered content reveals
 - 🎯 **Smooth Transitions** - Professional animations and micro-interactions throughout
+- 📄 **Direct CV Access** - One-click CV viewing with external link integration
 
 ## 🚀 Tech Stack {#tech-stack}
 
@@ -157,14 +167,21 @@ Experience all loading animations at `/loading-demo`:
 
 | Section | Description | Features |
 |---------|-------------|----------|
-| **👤 Personal Info** | Profile management | Bio, contact details, profile image, CV upload |
+| **👤 Personal Info** | Profile management | Bio, contact details, profile image, statistics |
 | **📁 Projects** | Portfolio showcase | Project details, images, tech stack, live/repo links |
 | **⚡ Tech Stack** | Skills display | Technologies with custom SVG icons |
 | **🏆 Achievements** | Credentials | Education, certifications, professional milestones |
 | **🔗 Social Links** | Professional networking | LinkedIn, GitHub, Twitter, custom links |
 | **📧 Contact Form** | Lead management | Custom form builder, submission tracking |
-| **💾 Storage** | File management | Upload tracking, file organization, storage analytics |
+| **📄 CV Management** | Resume sharing | Direct link integration for seamless CV access |
 | **🗂️ Data Backup** | Portfolio backup | Export/import complete portfolio data |
+
+### 🎨 **Recent Dashboard Improvements**
+- **Compact Layout**: Optimized spacing and sizing for better information density
+- **Enhanced Navigation**: Larger, more accessible sidebar buttons with improved touch targets
+- **Mobile Optimization**: Touch-friendly interactions and responsive design improvements
+- **Streamlined CV Management**: Direct link approach for reliable CV sharing
+- **Visual Organization**: Better section separation and content hierarchy
 
 ## 📖 Usage Guide
 
@@ -186,7 +203,8 @@ NoirKit features a **comprehensive setup guide** that makes portfolio creation i
 6. **Content Creation** → Add projects (~10 min), tech stack (~3 min), achievements (~5 min)
 7. **Social Integration** → Connect social links (~2 min)
 8. **Contact Setup** → Configure contact forms (~3 min)
-9. **Go Live** → Share your public portfolio URL
+9. **CV Setup** → Add direct CV link for easy sharing (~1 min)
+10. **Go Live** → Share your public portfolio URL
 
 ### ⏱️ **Setup Time Breakdown**
 - **Personal Info**: 3 minutes
@@ -195,7 +213,8 @@ NoirKit features a **comprehensive setup guide** that makes portfolio creation i
 - **Milestones**: 3 minutes
 - **Social Links**: 2 minutes
 - **Contact Form**: 2 minutes
-- **Total**: ~20 minutes
+- **CV Link**: 1 minute
+- **Total**: ~21 minutes
 
 ### 🎨 Customization
 
@@ -214,6 +233,7 @@ NoirKit features a **comprehensive setup guide** that makes portfolio creation i
 - Mobile-first approach
 - Breakpoint-specific layouts
 - Touch-friendly interactions
+- Optimized project card interactions
 
 ## 🔒 Security & Privacy
 
@@ -335,6 +355,11 @@ We welcome contributions! Please follow these steps:
 - Check Supabase logs for details
 - Verify RLS policies are active
 
+**CV Link Issues**
+- Ensure the CV link is publicly accessible
+- Test the link in an incognito browser
+- Verify the link format is correct
+
 </details>
 
 ## 📝 License
@@ -369,6 +394,13 @@ Need help? Here's how to get support:
 - **Realistic time estimates** for every step
 - **Feature previews** so users know what they're building
 - **Mobile-first responsive** design that works everywhere
+- **Streamlined CV management** with direct link integration
+
+### 📱 **Mobile Excellence**
+- **Touch-optimized interactions** throughout the dashboard
+- **Responsive project cards** with swipe gestures
+- **Compact, organized layouts** for better mobile productivity
+- **Enhanced navigation** with larger touch targets
 
 ## 🙏 Acknowledgments
 
