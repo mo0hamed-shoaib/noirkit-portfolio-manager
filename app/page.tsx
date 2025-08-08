@@ -21,6 +21,9 @@ import {
   SocialLinksSkeleton,
   AchievementsSkeleton,
 } from "@/components/ui/skeleton";
+import { ProgressBarLoader } from "@/components/ui/enhanced-loading";
+import { EnhancedProgressLoader, ContentRevealWrapper } from "@/components/ui/enhanced-loading-with-reveal";
+import { PortfolioSetupGuide } from "@/components/ui/portfolio-setup-guide";
 import { usePageTitle } from "@/lib/hooks/use-page-title";
 import { trackPageView } from "@/lib/analytics";
 
@@ -100,6 +103,7 @@ export default function Portfolio() {
   } = usePortfolioStore();
   const [isCVModalOpen, setIsCVModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [showContent, setShowContent] = useState(false);
 
   // Set dynamic page title based on user's name
   usePageTitle({
@@ -117,48 +121,29 @@ export default function Portfolio() {
     });
   }, [fetchAllData]);
 
-  // Show loading state while fetching data
-  if (loading) {
-    return <LoadingFallback />;
-  }
-
-  // If no personal info, show a message to set up the portfolio
-  if (!personalInfo) {
+  // Show enhanced loading state while fetching data
+  if (loading && !showContent) {
     return (
-      <div
-        className="min-h-screen bg-background text-foreground flex flex-col"
-        role="main"
-      >
-        <div className="flex-1 flex items-center justify-center p-6">
-          <div className="text-center max-w-md space-y-6">
-            <h1 className="text-3xl font-mono mb-4">Portfolio Not Set Up</h1>
-            <p className="text-muted-foreground mb-6 leading-relaxed">
-              This portfolio hasn't been configured yet. Sign in to the dashboard
-              to set up your portfolio.
-            </p>
-            <CustomButton
-              variant="outline"
-              asChild
-              className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
-            >
-              <a href="/auth/login" aria-label="Navigate to dashboard login page">
-                Go to Dashboard
-              </a>
-            </CustomButton>
-          </div>
-        </div>
-        <Footer />
-      </div>
+      <EnhancedProgressLoader 
+        onComplete={() => setShowContent(true)}
+        variant="particles" // or "waves", "grid", "constellation"
+      />
     );
   }
 
+  // If no personal info, show the enhanced setup guide
+  if (!personalInfo) {
+    return <PortfolioSetupGuide />;
+  }
+
   return (
-    <Suspense fallback={<LoadingFallback />}>
-      <div
-        className="min-h-screen bg-background text-foreground flex flex-col"
-        role="main"
-        aria-label={`${personalInfo.name}'s portfolio`}
-      >
+    <ContentRevealWrapper isVisible={showContent || !loading}>
+      <Suspense fallback={<LoadingFallback />}>
+        <div
+          className="min-h-screen bg-background text-foreground flex flex-col"
+          role="main"
+          aria-label={`${personalInfo.name}'s portfolio`}
+        >
         <div className="flex-1 p-6 lg:p-8">
           {/* Hybrid Layout - Consistent Sidebar + Full-Width Content */}
           <div className="space-y-8">
@@ -216,7 +201,8 @@ export default function Portfolio() {
           isOpen={isContactModalOpen}
           onClose={() => setIsContactModalOpen(false)}
         />
-      </div>
-    </Suspense>
+        </div>
+      </Suspense>
+    </ContentRevealWrapper>
   );
 }
