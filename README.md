@@ -5,7 +5,11 @@
   
   ### 🌟 Professional Portfolio Management Platform
   
-  *Build, manage, and showcase your professional portfolio with elegance and simplicity*
+  *Transform your professional presence with cinematic loading experiences and interactive setup*
+
+  **NoirKit** is a modern portfolio platform that makes creating stunning developer portfolios effortless and engaging. Built with Next.js 14 and Supabase, it features **animated canvas backgrounds**, **interactive setup guides** with realistic time estimates, and **staggered content reveals** that create movie-like transitions. 
+
+  Manage your complete professional presence through an intuitive dashboard - from projects and tech stacks to achievements and custom contact forms - while visitors enjoy a **lightning-fast, mobile-optimized** experience with **smooth animations** throughout.
   
   [![Next.js](https://img.shields.io/badge/Next.js-14.2.16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
