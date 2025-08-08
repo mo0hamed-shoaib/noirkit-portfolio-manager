@@ -12,6 +12,7 @@ import { SocialSection } from "@/components/sections/social-section";
 import { ProjectsSection } from "@/components/sections/projects-section";
 import { TechStackSection } from "@/components/sections/tech-stack-section";
 import { ContactAchievementsSection } from "@/components/sections/contact-achievements-section";
+import { ServicesFactsSection } from "@/components/sections/services-facts-section";
 import { Footer } from "@/components/footer";
 import {
   ProfileSkeleton,
@@ -30,44 +31,56 @@ function LoadingFallback() {
       role="main"
       aria-label="Loading portfolio content"
     >
-      <div className="flex-1 p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-8">
-          {/* Left Sidebar Skeletons */}
-          <aside
-            className="space-y-8"
-            role="complementary"
-            aria-label="Loading personal information"
-          >
-            <ProfileSkeleton />
-            <SocialLinksSkeleton />
-          </aside>
+      <div className="flex-1 p-6 lg:p-8">
+        {/* Hybrid Layout Skeleton - Matches current structure */}
+        <div className="space-y-8">
+          {/* Top Section: Skeleton for Hybrid Layout */}
+          <div className="grid grid-cols-1 2xl:grid-cols-12 gap-6">
+            {/* Left Sidebar Skeletons */}
+            <aside className="2xl:col-span-4 space-y-6">
+              <ProfileSkeleton />
+              <SocialLinksSkeleton />
+            </aside>
 
-          {/* Right Content Skeletons */}
-          <main className="space-y-8" role="main">
-            {/* Mobile Menu Button Skeleton */}
-            <div className="flex justify-end lg:hidden">
-              <div className="w-10 h-10 bg-gray-900/30 rounded-full animate-pulse" />
+            {/* Right Content Skeletons */}
+            <main className="2xl:col-span-8 space-y-6">
+              <TechStackSkeleton />
+              <AchievementsSkeleton />
+            </main>
+          </div>
+
+          {/* Full-Width Projects Section Skeleton */}
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <div className="h-8 w-32 bg-gray-900/30 rounded animate-pulse" />
+              <div className="h-4 w-48 bg-gray-900/30 rounded animate-pulse" />
             </div>
+            <div className="grid grid-cols-1 2xl:grid-cols-3 gap-4 min-h-[200px]">
+              {[...Array(3)].map((_, i) => (
+                <ProjectCardSkeleton key={i} />
+              ))}
+            </div>
+          </div>
 
-            {/* Projects Section Skeleton */}
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <div className="h-8 w-32 bg-gray-900/30 rounded animate-pulse" />
-                <div className="h-4 w-48 bg-gray-900/30 rounded animate-pulse" />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {[...Array(3)].map((_, i) => (
-                  <ProjectCardSkeleton key={i} />
+          {/* Services & Fun Facts Skeleton */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="border border-white/20 rounded-xl p-6 bg-black/20">
+              <div className="h-6 w-40 bg-gray-900/30 rounded animate-pulse mb-4" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="h-12 bg-gray-900/30 rounded animate-pulse" />
                 ))}
               </div>
             </div>
-
-            {/* Tech Stack Section Skeleton */}
-            <TechStackSkeleton />
-
-            {/* Achievements Section Skeleton */}
-            <AchievementsSkeleton />
-          </main>
+            <div className="border border-white/20 rounded-xl p-6 bg-black/20">
+              <div className="h-6 w-32 bg-gray-900/30 rounded animate-pulse mb-4" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="h-12 bg-gray-900/30 rounded animate-pulse" />
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <Footer />
@@ -147,47 +160,47 @@ export default function Portfolio() {
         aria-label={`${personalInfo.name}'s portfolio`}
       >
         <div className="flex-1 p-6 lg:p-8">
-          {/* Header - Theme toggle moved to projects section */}
-          <div className="mb-6">{/* Empty div to maintain spacing */}</div>
+          {/* Hybrid Layout - Consistent Sidebar + Full-Width Content */}
+          <div className="space-y-8">
+            {/* Top Section: Consistent Height Cards */}
+            <div className="grid grid-cols-1 2xl:grid-cols-12 gap-6">
+              {/* Left Sidebar - Profile & Quick Actions (Fixed Height) */}
+              <aside className="2xl:col-span-4 space-y-6">
+                <div className="animate-fadeInUp">
+                  <ProfileSection personalInfo={personalInfo} />
+                </div>
+                <div className="animate-fadeInUp animate-delay-100">
+                  <SocialSection 
+                    socialLinks={socialLinks} 
+                    onViewCV={() => setIsCVModalOpen(true)}
+                    onContactClick={() => setIsContactModalOpen(true)}
+                  />
+                </div>
+              </aside>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-8 lg:gap-12 max-w-none">
-            {/* Left Sidebar */}
-            <aside
-              className="space-y-10"
-              role="complementary"
-              aria-label="Personal information and social links"
-            >
-              <ProfileSection
-                personalInfo={personalInfo}
-              />
+              {/* Right Content - Variable Height Cards */}
+              <main className="2xl:col-span-8 space-y-6">
+                <div className="animate-slideInRight">
+                  <TechStackSection techStack={techStack} />
+                </div>
+                <div className="animate-slideInRight animate-delay-100">
+                  <ContactAchievementsSection
+                    achievements={achievements}
+                    onContactClick={() => setIsContactModalOpen(true)}
+                  />
+                </div>
+              </main>
+            </div>
 
-              <SocialSection 
-                socialLinks={socialLinks} 
-                onViewCV={() => setIsCVModalOpen(true)}
-                onContactClick={() => setIsContactModalOpen(true)}
-              />
-            </aside>
-
-            {/* Right Content */}
-            <main
-              className="space-y-10"
-              role="main"
-              aria-label="Portfolio content"
-            >
-
-
+            {/* Full-Width Projects Section */}
+            <div className="animate-fadeInUp animate-delay-200">
               <ProjectsSection projects={projects} techStack={techStack} />
+            </div>
 
-              {/* Subtle divider */}
-              <div className="border-t border-border" aria-hidden="true"></div>
-
-              <TechStackSection techStack={techStack} />
-
-              <ContactAchievementsSection
-                achievements={achievements}
-                onContactClick={() => setIsContactModalOpen(true)}
-              />
-            </main>
+            {/* Bottom Section: Services & Fun Facts - Full Width */}
+            <div className="animate-fadeInUp animate-delay-300">
+              <ServicesFactsSection />
+            </div>
           </div>
         </div>
 

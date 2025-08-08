@@ -13,6 +13,7 @@ import {
   Eye,
   EyeOff,
   GripVertical,
+  Loader2,
 } from "lucide-react";
 import { usePortfolioStore } from "@/lib/store";
 import type { TechStack } from "@/lib/types";
@@ -48,6 +49,8 @@ export default function TechStackPage() {
   const [editingTech, setEditingTech] = useState<TechStack | null>(null);
   const [showSvgPreview, setShowSvgPreview] = useState(false);
   const [isReordering, setIsReordering] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [formData, setFormData] = useState<Omit<TechStack, "id">>({
     name: "",
     icon: "",
@@ -86,6 +89,7 @@ export default function TechStackPage() {
       return;
     }
 
+    setIsSubmitting(true);
     try {
       if (editingTech) {
         await updateTechStack(editingTech.id, formData);
@@ -97,26 +101,34 @@ export default function TechStackPage() {
       closeModal();
     } catch (error) {
       showToast("Failed to save technology", "error");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this technology?")) {
+      setIsDeleting(id);
       try {
         await deleteTechStack(id);
         showToast("Technology deleted successfully!", "success");
       } catch (error) {
         showToast("Failed to delete technology", "error");
+      } finally {
+        setIsDeleting(null);
       }
     }
   };
 
   const handleReorder = async (reorderedTechStack: TechStack[]) => {
+    setIsReordering(true);
     try {
       await reorderTechStack(reorderedTechStack);
       showToast("Technologies reordered successfully!", "success");
     } catch (error) {
       showToast("Failed to reorder technologies", "error");
+    } finally {
+      setIsReordering(false);
     }
   };
 
@@ -201,9 +213,19 @@ export default function TechStackPage() {
               size="sm"
               onClick={() => handleDelete(tech.id)}
               className="flex-1 sm:flex-none"
+              disabled={isDeleting === tech.id}
             >
-              <Trash2 className="w-3 h-3" />
-              <span className="sm:hidden ml-2">Delete</span>
+              {isDeleting === tech.id ? (
+                <>
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  <span className="sm:hidden ml-2">Deleting...</span>
+                </>
+              ) : (
+                <>
+                  <Trash2 className="w-3 h-3" />
+                  <span className="sm:hidden ml-2">Delete</span>
+                </>
+              )}
             </DashboardButton>
           </div>
         )}
@@ -266,6 +288,16 @@ export default function TechStackPage() {
           </DashboardButton>
         </div>
       </div>
+
+      {/* Reordering loading indicator */}
+      {isReordering && (
+        <div className="fixed top-4 right-4 z-50">
+          <div className="flex items-center gap-2 bg-black/80 backdrop-blur-sm rounded-full px-3 py-1 border border-white/20">
+            <Loader2 className="w-4 h-4 animate-spin text-white" />
+            <span className="text-xs text-white">Saving order...</span>
+          </div>
+        </div>
+      )}
 
       {/* Tech Stack Grid */}
       {isReordering ? (
@@ -388,9 +420,18 @@ export default function TechStackPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <DashboardButton type="submit" className="flex-1 sm:flex-none">
-                <Save className="w-4 h-4 mr-2" />
-                {editingTech ? "Update Technology" : "Add Technology"}
+              <DashboardButton type="submit" className="flex-1 sm:flex-none" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {editingTech ? "Updating..." : "Adding..."}
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    {editingTech ? "Update Technology" : "Add Technology"}
+                  </>
+                )}
               </DashboardButton>
               <DashboardButton
                 type="button"

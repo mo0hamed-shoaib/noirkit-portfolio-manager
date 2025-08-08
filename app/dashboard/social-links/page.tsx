@@ -16,6 +16,7 @@ import {
   Facebook,
   Youtube,
   Globe,
+  Loader2,
 } from "lucide-react";
 import { XIcon } from "@/components/ui/x-icon";
 import { usePortfolioStore } from "@/lib/store";
@@ -44,6 +45,8 @@ export default function SocialLinksPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingLink, setEditingLink] = useState<SocialLink | null>(null);
   const [isReordering, setIsReordering] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [formData, setFormData] = useState<
     Omit<SocialLink, "id" | "platform" | "icon">
   >({
@@ -131,6 +134,7 @@ export default function SocialLinksPage() {
       icon: "", // Empty icon since we use platform-based icons
     };
 
+    setIsSubmitting(true);
     try {
       if (editingLink) {
         await updateSocialLink(editingLink.id, formDataWithPlatform);
@@ -142,26 +146,34 @@ export default function SocialLinksPage() {
       closeModal();
     } catch (error) {
       showToast("Failed to save social link", "error");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this social link?")) {
+      setIsDeleting(id);
       try {
         await deleteSocialLink(id);
         showToast("Social link deleted successfully!", "success");
       } catch (error) {
         showToast("Failed to delete social link", "error");
+      } finally {
+        setIsDeleting(null);
       }
     }
   };
 
   const handleReorder = async (reorderedLinks: SocialLink[]) => {
+    setIsReordering(true);
     try {
       await reorderSocialLinks(reorderedLinks);
       showToast("Social links reordered successfully!", "success");
     } catch (error) {
       showToast("Failed to reorder social links", "error");
+    } finally {
+      setIsReordering(false);
     }
   };
 
@@ -225,13 +237,18 @@ export default function SocialLinksPage() {
             >
               <Edit className="w-3 h-3" />
             </DashboardButton>
-            <DashboardButton
-              variant="ghost"
-              size="sm"
-              onClick={() => handleDelete(link.id)}
-            >
-              <Trash2 className="w-3 h-3" />
-            </DashboardButton>
+                         <DashboardButton
+               variant="ghost"
+               size="sm"
+               onClick={() => handleDelete(link.id)}
+               disabled={isDeleting === link.id}
+             >
+               {isDeleting === link.id ? (
+                 <Loader2 className="w-3 h-3 animate-spin" />
+               ) : (
+                 <Trash2 className="w-3 h-3" />
+               )}
+             </DashboardButton>
           </div>
         )}
       </div>
@@ -265,8 +282,18 @@ export default function SocialLinksPage() {
         </div>
       </div>
 
-      {/* Social Links Grid */}
-      {isReordering ? (
+             {/* Reordering loading indicator */}
+       {isReordering && (
+         <div className="fixed top-4 right-4 z-50">
+           <div className="flex items-center gap-2 bg-black/80 backdrop-blur-sm rounded-full px-3 py-1 border border-white/20">
+             <Loader2 className="w-4 h-4 animate-spin text-white" />
+             <span className="text-xs text-white">Saving order...</span>
+           </div>
+         </div>
+       )}
+
+       {/* Social Links Grid */}
+       {isReordering ? (
         <SortableList
           items={socialLinks}
           onReorder={handleReorder}
@@ -318,9 +345,16 @@ export default function SocialLinksPage() {
             </div>
 
             <div className="flex gap-4">
-              <DashboardButton type="submit">
-                {editingLink ? "Update Link" : "Add Link"}
-              </DashboardButton>
+                           <DashboardButton type="submit" disabled={isSubmitting}>
+               {isSubmitting ? (
+                 <>
+                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                   {editingLink ? "Updating..." : "Adding..."}
+                 </>
+               ) : (
+                 editingLink ? "Update Link" : "Add Link"
+               )}
+             </DashboardButton>
               <DashboardButton
                 type="button"
                 variant="outline"

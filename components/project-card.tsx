@@ -23,8 +23,8 @@ interface ProjectCardProps {
 export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
+  const [imageErrors, setImageErrors] = useState<boolean[]>([]);
 
   const renderIcon = (iconPath: string, className = "w-5 h-5") => {
     if (!iconPath) return null;
@@ -74,27 +74,29 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
 
   const changeImage = useCallback(
     (newIndex: number) => {
-      if (isTransitioning || newIndex === currentImageIndex) return;
-
-      setIsTransitioning(true);
+      if (newIndex === currentImageIndex) return;
       setCurrentImageIndex(newIndex);
-
-      // Reset transition state after animation completes
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 1000);
     },
-    [isTransitioning, currentImageIndex]
+    [currentImageIndex]
   );
 
   // Initialize images loaded state
   useEffect(() => {
     setImagesLoaded(new Array(project.images.length).fill(false));
+    setImageErrors(new Array(project.images.length).fill(false));
   }, [project.images.length]);
 
   // Handle image load
   const handleImageLoad = (index: number) => {
     setImagesLoaded((prev) => {
+      const newState = [...prev];
+      newState[index] = true;
+      return newState;
+    });
+  };
+
+  const handleImageError = (index: number) => {
+    setImageErrors((prev) => {
       const newState = [...prev];
       newState[index] = true;
       return newState;
@@ -132,7 +134,7 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
 
   return (
     <div
-      className="relative aspect-square bg-gray-900 rounded-lg overflow-hidden group cursor-pointer"
+      className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden group cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -140,28 +142,28 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
       <div className="relative w-full h-full">
         {project.images.map((image, index) => (
           <div key={index} className="absolute inset-0">
-            <Image
-              src={image || "/placeholder.svg"}
-              alt={`${project.name} - Image ${index + 1}`}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className={`object-cover transition-opacity duration-1000 ease-in-out ${
-                index === currentImageIndex
-                  ? "opacity-100 z-10"
-                  : "opacity-0 z-0"
-              }`}
-              priority={index === 0}
-              loading={index === 0 ? "eager" : "lazy"}
-              onLoad={() => handleImageLoad(index)}
-              quality={85}
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-            />
-            {/* Loading skeleton for images */}
-            {!imagesLoaded[index] && (
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse" />
-            )}
-          </div>
+              <Image
+                src={imageErrors[index] ? "/placeholder.svg" : (image || "/placeholder.svg")}
+                alt={`${project.name} - Image ${index + 1}`}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                style={{ 
+                  transition: 'opacity 1500ms ease-in-out',
+                  opacity: index === currentImageIndex ? 1 : 0,
+                  zIndex: index === currentImageIndex ? 10 : 0
+                }}
+                className="object-cover"
+                priority={index === 0}
+                loading={index === 0 ? undefined : "lazy"}
+                onLoad={() => handleImageLoad(index)}
+                onError={() => handleImageError(index)}
+                quality={85}
+              />
+              {/* Loading skeleton for images */}
+              {!imagesLoaded[index] && (
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse" />
+              )}
+            </div>
         ))}
 
         {/* Image Navigation - Only show if multiple images */}
@@ -184,33 +186,42 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
               <ChevronRight className="w-4 h-4 text-white" />
             </button>
 
-            {/* Image Indicators */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30">
-              {project.images.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={(e) => goToImage(e, index)}
-                  title={`Go to image ${index + 1}`}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === currentImageIndex ? "bg-white" : "bg-white/30"
-                  }`}
-                  aria-label={`Go to image ${index + 1}`}
-                />
-              ))}
+            {/* Modern Image Progress Bar */}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-30">
+              <div className="flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 border border-white/10">
+                <span className="text-xs text-white/80">
+                  {currentImageIndex + 1}/{project.images.length}
+                </span>
+                <div className="w-12 bg-white/20 rounded-full h-1 overflow-hidden">
+                  <div 
+                    className="bg-white h-full rounded-full transition-all duration-2000 ease-in-out"
+                    style={{ width: `${((currentImageIndex + 1) / project.images.length) * 100}%` }}
+                  />
+                </div>
+              </div>
             </div>
           </>
         )}
       </div>
 
-      {/* Hover Overlay with Title, Description, Tech Stack, and Buttons */}
-      <div
-        className={`absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col justify-center items-center p-4 transition-opacity duration-300 z-20 rounded-lg ${
-          isHovered ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <h3 className="text-xl font-bold text-white mb-2 text-center">
+      {/* Permanent Project Name Overlay */}
+      <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/80 to-transparent p-4 z-20">
+        <h3 className="text-lg font-bold text-white text-center">
           {project.name}
         </h3>
+      </div>
+
+      {/* Hover Overlay with Description, Tech Stack, and Buttons */}
+      <div
+        className={`absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col justify-center items-center p-4 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] z-20 rounded-lg ${
+          isHovered ? "opacity-100 scale-100" : "opacity-0 scale-95"
+        }`}
+      >
+        {/* Project Name in Hover Overlay */}
+        <h3 className="text-xl font-bold text-white mb-3 text-center">
+          {project.name}
+        </h3>
+        
         <p className="text-gray-300 text-sm mb-4 text-center line-clamp-3 leading-relaxed">
           {project.description}
         </p>
@@ -244,7 +255,7 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
               variant="outline"
               size="sm"
               asChild
-              className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
+              className="bg-transparent border-white text-white hover:bg-white hover:text-black transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
             >
               <Link
                 href={project.deployLink}
@@ -261,7 +272,7 @@ export function ProjectCard({ project, techStackIcons }: ProjectCardProps) {
               variant="outline"
               size="sm"
               asChild
-              className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
+              className="bg-transparent border-white text-white hover:bg-white hover:text-black transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
             >
               <Link
                 href={project.githubLink}

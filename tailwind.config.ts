@@ -15,6 +15,7 @@ const config: Config = {
   		screens: {
   			'lg': '1440px',
   			'xl': '1370px',
+  			'2xl': '1300px',
   		},
   		colors: {
   			background: 'hsl(var(--background))',

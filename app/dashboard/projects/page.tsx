@@ -11,6 +11,7 @@ import {
   Upload,
   X,
   GripVertical,
+  Loader2,
 } from "lucide-react";
 import { usePortfolioStore } from "@/lib/store";
 import type { Project } from "@/lib/types";
@@ -47,6 +48,9 @@ export default function ProjectsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isReordering, setIsReordering] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
   const [formData, setFormData] = useState<Omit<Project, "id">>({
     name: "",
     description: "",
@@ -90,6 +94,7 @@ export default function ProjectsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       if (editingProject) {
         await updateProject(editingProject.id, formData);
@@ -101,22 +106,32 @@ export default function ProjectsPage() {
       closeModal();
     } catch (error) {
       showToast("Failed to save project", "error");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this project?")) {
+      setIsDeleting(id);
       try {
         await deleteProject(id);
         showToast("Project deleted successfully!", "success");
       } catch (error) {
         showToast("Failed to delete project", "error");
+      } finally {
+        setIsDeleting(null);
       }
     }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    
+    setIsUploadingImages(true);
+    let processedCount = 0;
+    
     files.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -125,6 +140,16 @@ export default function ProjectsPage() {
           ...prev,
           images: [...prev.images, result],
         }));
+        processedCount++;
+        if (processedCount === files.length) {
+          setIsUploadingImages(false);
+        }
+      };
+      reader.onerror = () => {
+        processedCount++;
+        if (processedCount === files.length) {
+          setIsUploadingImages(false);
+        }
       };
       reader.readAsDataURL(file);
     });
@@ -147,11 +172,14 @@ export default function ProjectsPage() {
   };
 
   const handleReorder = async (reorderedProjects: Project[]) => {
+    setIsReordering(true);
     try {
       await reorderProjects(reorderedProjects);
       showToast("Projects reordered successfully!", "success");
     } catch (error) {
       showToast("Failed to reorder projects", "error");
+    } finally {
+      setIsReordering(false);
     }
   };
 
@@ -194,11 +222,21 @@ export default function ProjectsPage() {
       }`}
     >
       <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
-        {isReordering && (
-          <div className="cursor-grab active:cursor-grabbing mt-2 self-start">
-            <GripVertical className="w-4 h-4 text-gray-400" />
+              {isReordering && (
+        <div className="cursor-grab active:cursor-grabbing mt-2 self-start">
+          <GripVertical className="w-4 h-4 text-gray-400" />
+        </div>
+      )}
+      
+      {/* Reordering loading indicator */}
+      {isReordering && (
+        <div className="fixed top-4 right-4 z-50">
+          <div className="flex items-center gap-2 bg-black/80 backdrop-blur-sm rounded-full px-3 py-1 border border-white/20">
+            <Loader2 className="w-4 h-4 animate-spin text-white" />
+            <span className="text-xs text-white">Saving order...</span>
           </div>
-        )}
+        </div>
+      )}
 
         <div className="aspect-video bg-gray-800 rounded-lg overflow-hidden flex-shrink-0 w-full sm:w-24">
           {project.images && project.images.length > 0 && project.images[0] ? (
@@ -244,9 +282,19 @@ export default function ProjectsPage() {
                   size="sm"
                   onClick={() => handleDelete(project.id)}
                   className="flex-1 sm:flex-none"
+                  disabled={isDeleting === project.id}
                 >
-                  <Trash2 className="w-4 h-4" />
-                  <span className="sm:hidden ml-2">Delete</span>
+                  {isDeleting === project.id ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span className="sm:hidden ml-2">Deleting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="w-4 h-4" />
+                      <span className="sm:hidden ml-2">Delete</span>
+                    </>
+                  )}
                 </DashboardButton>
               </div>
             )}
@@ -441,16 +489,32 @@ export default function ProjectsPage() {
             <div className="space-y-2">
               <Label>Project Images</Label>
               <div className="space-y-4">
-                <DashboardButton type="button" variant="outline" asChild className="w-full sm:w-auto">
-                  <label className="cursor-pointer">
-                    <Upload className="w-4 h-4 mr-2" />
-                    Upload Images
+                <DashboardButton 
+                  type="button" 
+                  variant="outline" 
+                  asChild 
+                  className="w-full sm:w-auto"
+                  disabled={isUploadingImages}
+                >
+                  <label className={`cursor-pointer ${isUploadingImages ? 'cursor-not-allowed' : ''}`}>
+                    {isUploadingImages ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4 mr-2" />
+                        Upload Images
+                      </>
+                    )}
                     <input
                       type="file"
                       multiple
                       accept="image/*"
                       onChange={handleImageUpload}
                       className="hidden"
+                      disabled={isUploadingImages}
                     />
                   </label>
                 </DashboardButton>
@@ -485,8 +549,19 @@ export default function ProjectsPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <DashboardButton type="submit" className="flex-1 sm:flex-none">
-                {editingProject ? "Update Project" : "Add Project"}
+              <DashboardButton 
+                type="submit" 
+                className="flex-1 sm:flex-none"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {editingProject ? "Updating..." : "Adding..."}
+                  </>
+                ) : (
+                  editingProject ? "Update Project" : "Add Project"
+                )}
               </DashboardButton>
               <DashboardButton
                 type="button"

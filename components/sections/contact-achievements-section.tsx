@@ -44,15 +44,15 @@ export function ContactAchievementsSection({
               <Trophy className="w-4 h-4 text-yellow-400" />
             </div>
             <div className="min-w-0 flex-1">
-              <h2 className="text-lg font-mono text-white font-bold">Achievements & Education</h2>
-              <div className="flex items-center gap-2 text-xs text-gray-400">
-                <span>{achievements.length} items</span>
+              <h2 className="text-2xl font-mono text-white font-bold">Achievements & Education</h2>
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <span>{achievements.length} Events</span>
                 {achievements.length > 0 && (
                   <>
                     <span>•</span>
-                    <span>{achievements.filter(a => a.type === "education").length} Education</span>
+                    <span>{achievements.filter(a => a.type === "achievement").length} Achievements</span>
                     <span>•</span>
-                    <span>{achievements.filter(a => a.type === "achievement").length} Awards</span>
+                    <span>{achievements.filter(a => a.type === "education").length} Education</span>
                   </>
                 )}
               </div>
@@ -85,7 +85,7 @@ export function ContactAchievementsSection({
                   <h4 className="font-medium text-sm text-white truncate">
                     {achievement.title}
                   </h4>
-                  <span className="text-xs text-gray-500 truncate block">
+                  <span className="text-sm text-gray-400 truncate block">
                     {achievement.date}
                   </span>
                 </div>
@@ -94,7 +94,7 @@ export function ContactAchievementsSection({
             ))}
             {achievements.length > 9 && (
               <div className="text-center col-span-full pt-2">
-                <span className="text-xs text-gray-500">+{achievements.length - 9} more items</span>
+                <span className="text-sm text-gray-400">+{achievements.length - 9} more items</span>
               </div>
             )}
           </div>

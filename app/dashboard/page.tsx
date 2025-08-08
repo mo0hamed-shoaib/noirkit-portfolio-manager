@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState, useEffect, useCallback } from "react";
-import { Upload, Mail, Save } from "lucide-react";
+import { Upload, Mail, Save, Loader2 } from "lucide-react";
 import { usePortfolioStore } from "@/lib/store";
 import { CustomButton } from "@/components/ui/custom-button";
 import { CustomInput } from "@/components/ui/custom-input";
@@ -137,15 +137,14 @@ export default function PersonalInfoPage() {
             Update your personal details and contact information
           </p>
         </div>
+        
         {/* Auto-save indicator */}
-        <div className="flex items-center gap-2">
-          {isAutoSaving && (
-            <div className="flex items-center gap-2 text-green-400 text-sm">
-              <Save className="w-4 h-4 animate-pulse" />
-              <span>Auto-saving...</span>
-            </div>
-          )}
-        </div>
+        {isAutoSaving && (
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>Auto-saving...</span>
+          </div>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -282,7 +281,14 @@ export default function PersonalInfoPage() {
         </div>
 
         <DashboardButton type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Saving..." : "Save Changes"}
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            "Save Changes"
+          )}
         </DashboardButton>
       </form>
 
