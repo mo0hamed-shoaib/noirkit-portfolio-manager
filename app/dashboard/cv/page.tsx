@@ -16,10 +16,13 @@ import { CustomButton } from "@/components/ui/custom-button";
 import { CVModal } from "@/components/cv-modal";
 import { useToast } from "@/components/ui/toast";
 import { DashboardButton } from "@/components/ui/dashboard-button";
+import { uploadCV, deleteFile } from "@/lib/storage";
+import { useAuth } from "@/lib/auth-context";
 
 export default function CVManagementPage() {
   const { personalInfo, updatePersonalInfo } = usePortfolioStore();
   const { showToast } = useToast();
+  const { user } = useAuth();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -42,21 +45,24 @@ export default function CVManagementPage() {
     setIsUploading(true);
 
     try {
-      // Convert file to base64 for storage
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const result = e.target?.result as string;
-        await updatePersonalInfo({ cvFile: result });
-        setIsUploading(false);
-        showToast("CV uploaded successfully!", "success");
-      };
-      reader.onerror = () => {
-        setIsUploading(false);
-        showToast("Error uploading file. Please try again.", "error");
-      };
-      reader.readAsDataURL(file);
+      if (!user?.id) {
+        throw new Error("User not authenticated");
+      }
+
+      // Upload to Supabase storage
+      const result = await uploadCV(file, user.id);
+      
+      if (result.error) {
+        throw new Error(result.error);
+      }
+
+      // Update personal info with the storage URL
+      await updatePersonalInfo({ cvFile: result.url });
+      setIsUploading(false);
+      showToast("CV uploaded successfully!", "success");
     } catch (error) {
       setIsUploading(false);
+      console.error("Upload error:", error);
       showToast("Error uploading file. Please try again.", "error");
     }
   };
@@ -102,19 +108,34 @@ export default function CVManagementPage() {
       )
     ) {
       try {
+        if (!user?.id) {
+          throw new Error("User not authenticated");
+        }
+
+        // Delete from Supabase storage if it's a storage URL
+        if (personalInfo?.cvFile && !personalInfo.cvFile.startsWith('data:')) {
+          const fileName = `${user.id}/cv.pdf`;
+          await deleteFile("cv-files", fileName);
+        }
+
         await updatePersonalInfo({ cvFile: undefined });
         showToast("CV removed successfully", "success");
       } catch (error) {
+        console.error("Remove error:", error);
         showToast("Failed to remove CV", "error");
       }
     }
   };
 
-  const formatFileSize = (base64String: string) => {
-    // Rough estimation of file size from base64
-    const sizeInBytes = (base64String.length * 3) / 4;
-    const sizeInMB = sizeInBytes / (1024 * 1024);
-    return sizeInMB.toFixed(2) + " MB";
+  const formatFileSize = (fileUrl: string) => {
+    // For storage URLs, we can't easily get the size, so show a placeholder
+    if (fileUrl.startsWith('data:')) {
+      // Rough estimation of file size from base64
+      const sizeInBytes = (fileUrl.length * 3) / 4;
+      const sizeInMB = sizeInBytes / (1024 * 1024);
+      return sizeInMB.toFixed(2) + " MB";
+    }
+    return "PDF Format"; // For storage URLs, we don't show size
   };
 
   return (

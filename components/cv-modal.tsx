@@ -27,6 +27,7 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string>("");
 
   const handleDownload = async () => {
     if (!personalInfo?.cvFile) return;
@@ -95,6 +96,16 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
     if (open) {
       setIsLoading(true);
       setHasError(false);
+      // Create proper PDF URL for iframe
+      if (personalInfo?.cvFile) {
+        // If it's a base64 data URL, use it directly
+        if (personalInfo.cvFile.startsWith('data:')) {
+          setPdfUrl(personalInfo.cvFile);
+        } else {
+          // For Supabase storage URLs, use directly (they work better in iframes)
+          setPdfUrl(personalInfo.cvFile);
+        }
+      }
     } else {
       onClose();
     }
@@ -234,13 +245,14 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
                 </div>
               )}
 
-              {/* PDF Viewer */}
+              {/* PDF Viewer - Works on both mobile and desktop */}
               <iframe
-                src={`${personalInfo.cvFile}#toolbar=0&navpanes=0&scrollbar=1&view=FitH`}
+                src={pdfUrl}
                 className="w-full h-full border-0"
                 title="CV Preview"
                 onLoad={handleIframeLoad}
                 onError={handleIframeError}
+                sandbox="allow-same-origin allow-scripts allow-forms"
               />
             </div>
           )}
