@@ -10,7 +10,8 @@ let pdfjsLib: any = null;
 const loadPDFJS = async () => {
   if (typeof window !== 'undefined' && !pdfjsLib) {
     pdfjsLib = await import("pdfjs-dist");
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+    // Disable worker to avoid CORS issues - PDF.js will work in main thread
+    pdfjsLib.GlobalWorkerOptions.workerSrc = false;
   }
   return pdfjsLib;
 };
