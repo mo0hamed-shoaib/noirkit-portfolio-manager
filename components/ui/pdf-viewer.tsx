@@ -1,12 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import * as pdfjsLib from "pdfjs-dist";
 import { Loader2, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCw } from "lucide-react";
 import { CustomButton } from "./custom-button";
 
-// Set up PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Dynamic import to prevent server-side execution
+let pdfjsLib: any = null;
+
+const loadPDFJS = async () => {
+  if (typeof window !== 'undefined' && !pdfjsLib) {
+    pdfjsLib = await import("pdfjs-dist");
+    pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+  }
+  return pdfjsLib;
+};
 
 interface PDFViewerProps {
   url: string;
@@ -22,18 +29,32 @@ export function PDFViewer({ url, className = "" }: PDFViewerProps) {
   const [rotation, setRotation] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure component only runs on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
-    loadPDF();
-  }, [url]);
+    if (isClient) {
+      loadPDF();
+    }
+  }, [url, isClient]);
 
   const loadPDF = async () => {
     try {
       setIsLoading(true);
       setError(null);
 
+      // Load PDF.js dynamically
+      const pdfjs = await loadPDFJS();
+      if (!pdfjs) {
+        throw new Error("PDF.js failed to load");
+      }
+
       // Load the PDF document
-      const loadingTask = pdfjsLib.getDocument(url);
+      const loadingTask = pdfjs.getDocument(url);
       const pdf = await loadingTask.promise;
       
       setPdfDoc(pdf);
@@ -105,7 +126,8 @@ export function PDFViewer({ url, className = "" }: PDFViewerProps) {
     setRotation(prev => (prev + 90) % 360);
   };
 
-  if (isLoading) {
+  // Show loading state on server side or while client is initializing
+  if (!isClient || isLoading) {
     return (
       <div className={`flex items-center justify-center ${className}`}>
         <div className="text-center space-y-4">
