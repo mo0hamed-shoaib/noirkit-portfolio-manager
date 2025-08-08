@@ -10,8 +10,8 @@ let pdfjsLib: any = null;
 const loadPDFJS = async () => {
   if (typeof window !== 'undefined' && !pdfjsLib) {
     pdfjsLib = await import("pdfjs-dist");
-    // Disable worker to avoid CORS issues - PDF.js will work in main thread
-    pdfjsLib.GlobalWorkerOptions.workerSrc = false;
+    // Disable worker by setting it to null - this is the correct way
+    pdfjsLib.GlobalWorkerOptions.workerSrc = null;
   }
   return pdfjsLib;
 };
