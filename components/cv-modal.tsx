@@ -126,11 +126,14 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
       setHasError(false);
       // Create proper PDF URL for iframe
       if (personalInfo?.cvFile) {
+        console.log("CV File URL:", personalInfo.cvFile);
         // If it's a base64 data URL, use it directly
         if (personalInfo.cvFile.startsWith('data:')) {
+          console.log("Using base64 data URL");
           setPdfUrl(personalInfo.cvFile);
         } else {
           // For Supabase storage URLs, use directly first, then try blob if needed
+          console.log("Using Supabase storage URL");
           setPdfUrl(personalInfo.cvFile);
           // Also try to create a blob URL as backup
           createBlobUrl(personalInfo.cvFile);
@@ -145,6 +148,15 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
   const createBlobUrl = async (url: string) => {
     try {
       console.log("Attempting to create blob URL from:", url);
+      
+      // First test if the URL is accessible
+      const testResponse = await fetch(url, { method: 'HEAD' });
+      console.log("URL accessibility test:", testResponse.status, testResponse.statusText);
+      
+      if (!testResponse.ok) {
+        throw new Error(`URL not accessible: ${testResponse.status} ${testResponse.statusText}`);
+      }
+      
       const response = await fetch(url, {
         mode: 'cors',
         credentials: 'omit'
@@ -172,7 +184,10 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="w-[95vw] max-w-4xl h-[95vh] max-h-[800px] bg-black border border-white text-white p-0 flex flex-col gap-0">
+      <DialogContent 
+        className="w-[95vw] max-w-4xl h-[95vh] max-h-[800px] bg-black border border-white text-white p-0 flex flex-col gap-0"
+        aria-describedby="cv-modal-description"
+      >
         {/* Header */}
         <DialogHeader className="px-4 sm:px-6 py-4 pr-4 sm:pr-16 border-b border-white/20 flex-shrink-0">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -223,7 +238,7 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
         </DialogHeader>
 
         {/* Content Area - Takes remaining space */}
-        <div className="flex-1 min-h-0 relative">
+        <div className="flex-1 min-h-0 relative" id="cv-modal-description">
           {!hasCvFile ? (
             <div className="h-full flex items-center justify-center p-4 sm:p-6">
               <div className="text-center space-y-4 sm:space-y-6 max-w-sm">
