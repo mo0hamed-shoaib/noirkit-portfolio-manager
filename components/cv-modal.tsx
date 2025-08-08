@@ -106,7 +106,7 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="w-[95vw] max-w-4xl h-[95vh] max-h-[800px] bg-black border border-white text-white p-0 flex flex-col gap-0">
         {/* Header */}
-        <DialogHeader className="px-4 sm:px-6 py-4 pr-12 sm:pr-16 border-b border-white/20 flex-shrink-0">
+        <DialogHeader className="px-4 sm:px-6 py-4 pr-4 sm:pr-16 border-b border-white/20 flex-shrink-0">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <DialogTitle className="text-lg sm:text-xl font-mono font-light">
@@ -130,27 +130,25 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
                   <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Full Screen
                 </CustomButton>
-                                 <CustomButton
-                   variant="outline"
-                   size="sm"
-                   onClick={handleDownload}
-                   disabled={isDownloading}
-                   className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20 text-xs sm:text-sm"
-                 >
-                   {isDownloading ? (
-                     <>
-                       <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />
-                       <span className="hidden sm:inline">Downloading...</span>
-                       <span className="sm:hidden">...</span>
-                     </>
-                   ) : (
-                     <>
-                       <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                       <span className="hidden sm:inline">Download PDF</span>
-                       <span className="sm:hidden">Download</span>
-                     </>
-                   )}
-                 </CustomButton>
+                <CustomButton
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDownload}
+                  disabled={isDownloading}
+                  className="hidden sm:flex transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20 text-xs"
+                >
+                  {isDownloading ? (
+                    <>
+                      <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 animate-spin" />
+                      <span>Downloading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                      <span>Download PDF</span>
+                    </>
+                  )}
+                </CustomButton>
               </div>
             )}
           </div>
@@ -260,6 +258,20 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
               >
                 <ExternalLink className="w-3 h-3 mr-1" />
                 Full Screen
+              </CustomButton>
+              <CustomButton
+                variant="outline"
+                size="sm"
+                onClick={handleDownload}
+                disabled={isDownloading}
+                className="flex-1 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20 text-xs"
+              >
+                {isDownloading ? (
+                  <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                ) : (
+                  <Download className="w-3 h-3 mr-1" />
+                )}
+                {isDownloading ? "Downloading..." : "Download PDF"}
               </CustomButton>
             </div>
           </div>

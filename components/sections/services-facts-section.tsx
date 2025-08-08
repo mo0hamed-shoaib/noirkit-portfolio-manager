@@ -1,15 +1,18 @@
 "use client";
 
-import { Coffee, Moon, Gamepad2 } from "lucide-react";
+import { Coffee, Moon, Gamepad2, Monitor } from "lucide-react";
 
 export function ServicesFactsSection() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Services & Expertise */}
       <div className="border border-white/20 rounded-xl p-6 bg-black/20 group hover:border-white/30 transition-all duration-300">
-        <h3 className="text-2xl font-mono font-bold mb-6 text-white group-hover:text-white/90 transition-colors duration-200">
+        <h3 className="text-2xl font-mono font-bold text-white group-hover:text-white/90 transition-colors duration-200">
           Expertise
         </h3>
+        <p className="text-gray-400 text-sm mt-1 mb-6">
+          Areas where I excel the most
+        </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group/item">
             <div className="w-2 h-2 bg-blue-400 rounded-full flex-shrink-0 group-hover/item:scale-125 transition-transform duration-200"></div>
@@ -32,9 +35,12 @@ export function ServicesFactsSection() {
 
       {/* Fun Facts */}
       <div className="border border-white/20 rounded-xl p-6 bg-black/20 group hover:border-white/30 transition-all duration-300">
-        <h3 className="text-2xl font-mono font-bold mb-6 text-white group-hover:text-white/90 transition-colors duration-200">
+        <h3 className="text-2xl font-mono font-bold text-white group-hover:text-white/90 transition-colors duration-200">
           Fun Facts
         </h3>
+        <p className="text-gray-400 text-sm mt-1 mb-6">
+          From my personal life
+        </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group/item">
             <Coffee className="w-5 h-5 text-orange-400 flex-shrink-0 group-hover/item:scale-110 transition-transform duration-200" />
@@ -47,6 +53,10 @@ export function ServicesFactsSection() {
           <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group/item">
             <Gamepad2 className="w-5 h-5 text-purple-400 flex-shrink-0 group-hover/item:scale-110 transition-transform duration-200" />
             <span className="text-gray-300 group-hover/item:text-white transition-colors duration-200">Gaming taught me problem-solving</span>
+          </div>
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group/item">
+            <Monitor className="w-5 h-5 text-cyan-400 flex-shrink-0 group-hover/item:scale-110 transition-transform duration-200" />
+            <span className="text-gray-300 group-hover/item:text-white transition-colors duration-200">Three monitors, still need more</span>
           </div>
         </div>
       </div>
