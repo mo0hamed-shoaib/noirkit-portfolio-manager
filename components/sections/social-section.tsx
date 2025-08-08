@@ -107,10 +107,10 @@ export function SocialSection({ socialLinks, onViewCV, onContactClick }: SocialS
             size="default"
             onClick={onViewCV}
             className="h-11 px-4 text-sm transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
-            title="View CV"
+            title="CV"
           >
             <FileText className="w-4 h-4 mr-1" />
-            View CV
+            CV
           </CustomButton>
           <CustomButton
             variant="outline"

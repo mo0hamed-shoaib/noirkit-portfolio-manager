@@ -19,7 +19,6 @@ import {
   Menu,
   X,
   Zap,
-  HardDrive,
 } from "lucide-react";
 import { CustomButton } from "@/components/ui/custom-button";
 import { DashboardButton } from "@/components/ui/dashboard-button";
@@ -37,8 +36,6 @@ const navigation = [
   { name: "Social Links", href: "/dashboard/social-links", icon: Share2 },
   { name: "Contact Form", href: "/dashboard/contact", icon: Mail },
   { name: "CV Management", href: "/dashboard/cv", icon: FileText },
-  { name: "Storage", href: "/dashboard/storage", icon: HardDrive },
-
   { name: "Data Backup", href: "/dashboard/backup", icon: Database },
 ];
 
@@ -85,7 +82,7 @@ export default function DashboardLayout({
           {/* Sidebar */}
           <div
             className={cn(
-              "fixed inset-y-0 left-0 z-30 w-64 bg-black border-r border-white/20 transform transition-transform duration-300 ease-in-out lg:transform-none",
+              "fixed inset-y-0 left-0 z-30 w-60 bg-black border-r border-white/20 transform transition-transform duration-300 ease-in-out lg:transform-none",
               sidebarOpen
                 ? "translate-x-0"
                 : "-translate-x-full lg:translate-x-0"
@@ -93,17 +90,17 @@ export default function DashboardLayout({
           >
             <div className="flex flex-col h-full">
               {/* Brand Header */}
-              <div className="flex-shrink-0 p-3 border-b border-white/20">
+              <div className="flex-shrink-0 p-4 border-b border-white/20">
                 <div className="flex items-center gap-3 mb-4">
                   <Image
                     src="/logo-icon.png"
                     alt="NoirKit Logo"
-                    width={32}
-                    height={32}
+                    width={36}
+                    height={36}
                     className="rounded-lg"
                   />
                   <div>
-                    <h1 className="text-xl font-mono font-bold">NoirKit</h1>
+                    <h1 className="text-lg font-mono font-bold">NoirKit</h1>
                     <p className="text-xs text-gray-400">Portfolio Dashboard</p>
                   </div>
                 </div>
@@ -133,51 +130,51 @@ export default function DashboardLayout({
                   </div>
                   <button
                     onClick={() => setSidebarOpen(false)}
-                    className="lg:hidden p-1 rounded-lg hover:bg-white/10 transition-colors border border-white/20"
+                    className="lg:hidden p-1.5 rounded-lg hover:bg-white/10 transition-colors border border-white/20"
                     title="Close sidebar"
                   >
-                    <X className="w-5 h-5" />
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
               {/* Navigation */}
-              <nav className="flex-1 p-2 space-y-1">
+              <nav className="flex-1 p-3 space-y-1">
                 {navigation.map((item) => {
                   const isActive = pathname === item.href;
                   return (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setSidebarOpen(false)}
-                      className={cn(
-                        "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200",
-                        isActive
-                          ? "bg-white/10 text-white border border-white/20 shadow-lg"
-                          : "text-gray-300 hover:bg-white/5 hover:text-white hover:border-white/10"
-                      )}
-                    >
-                      <item.icon
-                        className={cn(
-                          "w-5 h-5 flex-shrink-0",
-                          isActive
-                            ? "text-white"
-                            : "text-gray-400 group-hover:text-white"
-                        )}
-                      />
-                      <span className="font-medium text-sm">{item.name}</span>
-                    </Link>
+                                         <Link
+                       key={item.name}
+                       href={item.href}
+                       onClick={() => setSidebarOpen(false)}
+                       className={cn(
+                         "flex items-center gap-3 px-5 py-4 rounded-lg transition-all duration-200 group border",
+                         isActive
+                           ? "bg-white/10 text-white border-white/20 shadow-lg"
+                           : "text-gray-300 hover:bg-white/5 hover:text-white border-transparent hover:border-white/10"
+                       )}
+                     >
+                       <item.icon
+                         className={cn(
+                           "w-5 h-5 flex-shrink-0 transition-colors",
+                           isActive
+                             ? "text-white"
+                             : "text-gray-400 group-hover:text-white"
+                         )}
+                       />
+                       <span className="font-medium text-base">{item.name}</span>
+                     </Link>
                   );
                 })}
               </nav>
 
               {/* User Info */}
-              <div className="flex-shrink-0 p-2 border-t border-white/20">
+              <div className="flex-shrink-0 p-3 border-t border-white/20">
                 {user && (
-                  <div className="p-2 bg-black/50 border border-white/20 rounded-lg">
+                  <div className="p-3 bg-black/50 border border-white/20 rounded-lg">
                     <p className="text-xs text-gray-400 mb-1">Signed in as:</p>
                     {personalInfo?.name && (
-                      <p className="text-xs font-medium text-white">
+                      <p className="text-sm font-medium text-white truncate">
                         {personalInfo.name}
                       </p>
                     )}
@@ -188,7 +185,7 @@ export default function DashboardLayout({
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 min-w-0 lg:ml-64">
+          <div className="flex-1 min-w-0 lg:ml-60">
             {/* Mobile Header */}
             <div className="lg:hidden sticky top-0 z-20 bg-black border-b border-white/20 backdrop-blur-md">
               <div className="flex items-center justify-between p-4">
