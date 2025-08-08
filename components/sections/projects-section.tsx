@@ -64,7 +64,7 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
   return (
     <section className="border border-white/20 rounded-xl p-6 bg-black/20 group hover:border-white/30 transition-all duration-300">
       <div className="mb-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                 <div className="flex flex-col desktop:flex-row desktop:items-center desktop:justify-between gap-4">
           <div>
             <h2 className="text-2xl font-mono font-bold">My Projects</h2>
             <p className="text-gray-400 text-sm mt-1">
@@ -74,7 +74,7 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
 
           {/* Navigation Controls - Centered on mobile, right-aligned on desktop */}
           {totalPages > 1 && (
-            <div className="flex items-center gap-1 justify-center sm:justify-end">
+                         <div className="flex items-center gap-1 justify-center desktop:justify-end">
               <CustomButton
                  variant="outline"
                  size="sm"
@@ -110,7 +110,7 @@ export function ProjectsSection({ projects, techStack }: ProjectsSectionProps) {
           >
             {projectPages.map((pageProjects, pageIndex) => (
               <div key={pageIndex} className="w-full flex-shrink-0">
-                <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4 min-h-[250px] sm:min-h-[200px]">
+                                 <div className="grid grid-cols-1 desktop:grid-cols-3 gap-4 min-h-[250px] desktop:min-h-[200px]">
                   {pageProjects.map((project) => (
                     <ProjectCard
                       key={project.id}

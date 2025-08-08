@@ -13,9 +13,10 @@ const config: Config = {
   theme: {
   	extend: {
   		screens: {
-  			'lg': '1440px',
-  			'xl': '1370px',
-  			'2xl': '1300px',
+  			'lg': '1024px',
+  			'xl': '1280px',
+  			'desktop': '1300px',
+  			'2xl': '1536px',
   		},
   		colors: {
   			background: 'hsl(var(--background))',
