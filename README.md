@@ -23,7 +23,7 @@
   </p>
 </div>
 
-## ✨ Features
+## ✨ Features {#features}
 
 ### 👨‍💼 For Portfolio Owners
 - 🎨 **Complete Portfolio Management** - Personal info, projects, tech stack, achievements, social links
@@ -43,7 +43,7 @@
 - ⚡ **Lightning Fast** - Optimized performance with Next.js 14 and caching
 - 🔍 **SEO Optimized** - Built-in meta tags, Open Graph, and structured data
 
-## 🚀 Tech Stack
+## 🚀 Tech Stack {#tech-stack}
 
 <div align="center">
 
@@ -68,7 +68,7 @@
 - **Supabase account** (free tier available)
 - **Git** (optional but recommended)
 
-## 🚀 Quick Start
+## 🚀 Quick Start {#quick-start}
 
 ### 1. Clone & Install
 ```bash
@@ -108,7 +108,7 @@ pnpm dev
 
 🎉 **Your portfolio is now live at** `http://localhost:3000`
 
-## 📊 Dashboard
+## 📊 Dashboard {#dashboard}
 
 ### 🎛️ Management Features
 
@@ -161,7 +161,7 @@ pnpm dev
 - ✅ **CSRF Protection** - Built-in Next.js security
 - ✅ **Input Sanitization** - All user inputs validated and sanitized
 
-## 🚀 Deployment
+## 🚀 Deployment {#deployment}
 
 ### Deploy to Vercel (Recommended)
 
