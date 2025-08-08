@@ -15,11 +15,7 @@
   ---
   
   <p align="center">
-    <a href="#features">Features</a> •
-    <a href="#tech-stack">Tech Stack</a> •
-    <a href="#quick-start">Quick Start</a> •
-    <a href="#dashboard">Dashboard</a> •
-    <a href="#deployment">Deployment</a>
+    <strong>Features</strong> • <strong>Tech Stack</strong> • <strong>Quick Start</strong> • <strong>Dashboard</strong> • <strong>Deployment</strong>
   </p>
 </div>
 
