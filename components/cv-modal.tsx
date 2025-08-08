@@ -100,11 +100,31 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
         console.log("Iframe loading timeout, switching to fallback");
         setIsLoading(false);
         setHasError(true);
-      }, 10000); // 10 second timeout
+      }, 5000); // Reduced to 5 seconds for faster feedback
 
       return () => clearTimeout(timeout);
     }
   }, [isLoading, pdfUrl]);
+
+  // Additional check for iframe load issues
+  useEffect(() => {
+    if (pdfUrl && !pdfUrl.startsWith('data:')) {
+      // For non-base64 URLs, check if they're accessible
+      fetch(pdfUrl, { method: 'HEAD', mode: 'cors' })
+        .then(response => {
+          if (!response.ok) {
+            console.error("PDF URL not accessible:", response.status);
+            setIsLoading(false);
+            setHasError(true);
+          }
+        })
+        .catch(error => {
+          console.error("PDF URL fetch error:", error);
+          setIsLoading(false);
+          setHasError(true);
+        });
+    }
+  }, [pdfUrl]);
 
   // Reset states when modal opens
   const handleOpenChange = (open: boolean) => {
@@ -129,14 +149,25 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
   // Create blob URL for better iframe compatibility
   const createBlobUrl = async (url: string) => {
     try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Failed to fetch PDF");
+      console.log("Attempting to create blob URL from:", url);
+      const response = await fetch(url, {
+        mode: 'cors',
+        credentials: 'omit'
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`);
+      }
       
       const blob = await response.blob();
+      console.log("Blob created successfully, size:", blob.size);
+      
       const blobUrl = window.URL.createObjectURL(blob);
+      console.log("Blob URL created:", blobUrl);
       setPdfUrl(blobUrl);
     } catch (error) {
-      console.error("Failed to create blob URL, using direct URL:", error);
+      console.error("Failed to create blob URL:", error);
+      console.log("Falling back to direct URL:", url);
       // Fallback to direct URL
       setPdfUrl(url);
     }
@@ -231,11 +262,10 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
                 </div>
                 <div className="space-y-2 sm:space-y-3">
                   <h3 className="text-base sm:text-lg font-mono font-light text-red-400">
-                    Unable to Load CV
+                    Unable to Load CV Preview
                   </h3>
                   <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
-                    The CV file could not be displayed. This might be due to a
-                    corrupted file or network connectivity issues.
+                    The CV preview couldn't be displayed in the modal. This is common with certain browsers or network configurations. You can still view and download your CV using the buttons below.
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
@@ -245,17 +275,21 @@ export function CVModal({ isOpen, onClose }: CVModalProps) {
                     onClick={() => {
                       setHasError(false);
                       setIsLoading(true);
+                      // Retry with a fresh blob URL
+                      if (personalInfo?.cvFile && !personalInfo.cvFile.startsWith('data:')) {
+                        createBlobUrl(personalInfo.cvFile);
+                      }
                     }}
                     className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
                   >
-                    Retry Loading
+                    Retry Preview
                   </CustomButton>
                   <CustomButton
                     size="sm"
                     onClick={handleOpenInNewTab}
                     className="transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-white/20"
                   >
-                    Open Direct Link
+                    Open in New Tab
                   </CustomButton>
                 </div>
               </div>
