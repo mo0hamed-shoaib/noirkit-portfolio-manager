@@ -28,7 +28,7 @@ export function Footer() {
           {/* Social Links */}
           <div className="flex items-center gap-4">
             <Link
-              href="https://github.com"
+              href="https://github.com/mo0hamed-shoaib/noirkit-portfolio-manager"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
@@ -39,7 +39,7 @@ export function Footer() {
             </Link>
             <span className="text-xs text-muted-foreground">|</span>
             <Link
-              href="https://linkedin.com"
+              href="https://www.linkedin.com/in/mohamed-g-shoaib/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
