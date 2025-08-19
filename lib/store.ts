@@ -69,20 +69,66 @@ export const usePortfolioStore = create<PortfolioStore>((set, get) => ({
         data: { user },
       } = await supabase.auth.getUser()
 
-      // For public portfolio, fetch the first available profile
-      // This allows both authenticated and public users to see the portfolio
-      const { data: profiles, error: profilesError } = await supabase
-        .from("profiles")
-        .select("*")
-        .limit(1)
-        .single()
+      // For public portfolio, we need to determine which profile to show
+      // If user is authenticated, show their profile
+      // If not authenticated, show the first available profile (or a specific one)
+      let userId: string
 
-      if (profilesError || !profiles) {
-        set({ loading: false })
-        return
+      if (user) {
+        // Authenticated user - show their own profile
+        userId = user.id
+      } else {
+        // Public user - show a specific profile
+        // Check if there's a default user ID specified in environment
+        const defaultUserId = process.env.NEXT_PUBLIC_DEFAULT_USER_ID
+        const defaultUserEmail = process.env.NEXT_PUBLIC_DEFAULT_USER_EMAIL
+        
+        if (defaultUserId) {
+          // Use specific user ID
+          userId = defaultUserId
+        } else if (defaultUserEmail) {
+          // Use specific user email
+          const { data: profile, error: profileError } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("email", defaultUserEmail)
+            .single()
+
+          if (profileError || !profile) {
+            // Fallback to first available profile
+            const { data: profiles, error: profilesError } = await supabase
+              .from("profiles")
+              .select("*")
+              .limit(1)
+              .single()
+
+            if (profilesError || !profiles) {
+              // No profiles exist yet - this is expected for a new deployment
+              set({ loading: false })
+              return
+            }
+
+            userId = profiles.id
+          } else {
+            userId = profile.id
+          }
+        } else {
+          // Fallback to first available profile
+          const { data: profiles, error: profilesError } = await supabase
+            .from("profiles")
+            .select("*")
+            .limit(1)
+            .single()
+
+          if (profilesError || !profiles) {
+            // No profiles exist yet - this is expected for a new deployment
+            set({ loading: false })
+            return
+          }
+
+          userId = profiles.id
+        }
       }
-
-      const userId = profiles.id
 
       // Fetch personal info
       const { data: profile, error: profileError } = await supabase

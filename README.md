@@ -98,6 +98,8 @@ pnpm install
 2. Copy your project credentials from Settings > API
 
 ### 3. Environment Configuration
+
+Create a `.env.local` file in the root directory:
 ```bash
 # Create environment file
 cp .env.example .env.local
@@ -109,6 +111,10 @@ NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+
+# Optional: For public portfolio deployment, specify which user's portfolio to show
+# NEXT_PUBLIC_DEFAULT_USER_ID=your-user-id-here
+# NEXT_PUBLIC_DEFAULT_USER_EMAIL=your-email@example.com
 ```
 
 ### 4. Database Setup

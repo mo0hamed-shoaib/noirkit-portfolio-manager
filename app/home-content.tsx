@@ -104,6 +104,7 @@ export default function Portfolio() {
   const [isCVModalOpen, setIsCVModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [showContent, setShowContent] = useState(false);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   // Set dynamic page title based on user's name
   usePageTitle({
@@ -116,13 +117,14 @@ export default function Portfolio() {
     trackPageView("/portfolio");
 
     // Fetch portfolio data for public view (works for both authenticated and public users)
-    fetchAllData().catch(() => {
-      // If fetch fails, it means no portfolio data exists yet
+    fetchAllData().finally(() => {
+      // Mark initial load as complete regardless of success/failure
+      setInitialLoadComplete(true);
     });
   }, [fetchAllData]);
 
-  // Show enhanced loading state while fetching data
-  if (loading && !showContent) {
+  // Show enhanced loading state only if we're actually loading and don't have data yet
+  if (loading && !personalInfo && !showContent) {
     return (
       <EnhancedProgressLoader 
         onComplete={() => setShowContent(true)}
@@ -131,13 +133,46 @@ export default function Portfolio() {
     );
   }
 
-  // If no personal info, show the enhanced setup guide
+  // Show simple loading if we have data but are still loading (e.g., refreshing)
+  if (loading && personalInfo) {
+    return <LoadingFallback />;
+  }
+
+  // If no personal info and initial load is complete, show appropriate content
+  if (!personalInfo && initialLoadComplete) {
+    // For public portfolio, show a more appropriate message
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="text-center space-y-6 max-w-md mx-auto p-6">
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+          <h1 className="text-2xl font-bold text-foreground">Portfolio Coming Soon</h1>
+          <p className="text-muted-foreground">
+            This portfolio is being set up. Please check back later or contact the owner for more information.
+          </p>
+          <div className="flex justify-center space-x-4">
+            <a 
+              href="mailto:contact@example.com" 
+              className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
+            >
+              Contact Owner
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+    // Don't render the main content if personalInfo is null
   if (!personalInfo) {
-    return <PortfolioSetupGuide />;
+    return null;
   }
 
   return (
-    <ContentRevealWrapper isVisible={showContent || !loading}>
+    <ContentRevealWrapper isVisible={showContent || (initialLoadComplete && personalInfo)}>
       <Suspense fallback={<LoadingFallback />}>
         <div
           className="min-h-screen bg-background text-foreground flex flex-col"
